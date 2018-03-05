@@ -4,19 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EB8E5C71-EDD6-4098-A93E-A301D04B03E0}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{F7F839E4-949D-4F67-8754-35B4F2CB5B0C}</ProjectGuid>
+    <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Wpf_SyncCompositionPE</RootNamespace>
-    <AssemblyName>Wpf_SyncCompositionPE</AssemblyName>
+    <RootNamespace>TreeListViewCustomControlLibrary</RootNamespace>
+    <AssemblyName>TreeListViewCustomControlLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -26,7 +24,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,14 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -51,40 +43,30 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="TFlex.DOCs.Model">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\T-FLEX DOCs 15\Program\TFlex.DOCs.Model.dll</HintPath>
-    </Reference>
-    <Reference Include="TFlex.DOCs.ProjectManagement">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\T-FLEX DOCs 15\Program\TFlex.DOCs.ProjectManagement.dll</HintPath>
-    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="View\MainWindow.xaml">
+    <Compile Include="TreeViewUserControl.xaml.cs">
+      <DependentUpon>TreeViewUserControl.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Infrastructure\RelayCommand.cs" />
-    <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="ViewModel\TreeViewItemViewModel.cs" />
-    <Compile Include="ViewModel\TreeViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelBase.cs" />
-    <Compile Include="View\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Converters.cs" />
+    <Compile Include="TreeListView.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="TreeViewUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Factory.cs" />
-    <Compile Include="Model\ITreeNode.cs" />
-    <Compile Include="Model\PlanningSpaceGuidString.cs" />
-    <Compile Include="Model\ProjectFolder.cs" />
-    <Compile Include="Model\ProjectManagementWork.cs" />
-    <Compile Include="Model\ProjectTreeItem.cs" />
-    <Compile Include="Model\References.cs" />
-    <Compile Include="Model\Synchronization.cs" />
-    <Compile Include="Model\UsedResource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -107,15 +89,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TreeListViewCustomControlLibrary\TreeListViewCustomControlLibrary.csproj">
-      <Project>{F7F839E4-949D-4F67-8754-35B4F2CB5B0C}</Project>
-      <Name>TreeListViewCustomControlLibrary</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TFlex.DOCs.Model.References;
+using TreeListViewCustomControlLibrary;
 using Wpf_SyncCompositionPE.ViewModel;
 
 namespace Wpf_SyncCompositionPE
@@ -22,7 +23,7 @@ namespace Wpf_SyncCompositionPE
     /// </summary>
     public partial class MainWindow : Window
     {
-        MainWindowViewModel viewModel;
+        MainWindowViewModel viewModel; 
         public MainWindow(ReferenceObject startObjectRef)
         {
             InitializeComponent();

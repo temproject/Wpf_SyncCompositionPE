@@ -83,6 +83,7 @@
             <!-- кнопка переключения-->
             <ToggleButton IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor,
                 AncestorType=TreeViewItem}}" />
+            
         </StackPanel>
         <ControlTemplate.Triggers>
             <!--Триггер, используемый для отображения / скрытия кнопки расширения-->
@@ -144,4 +145,5 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
 </ResourceDictionary>

@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ConsoleApplication.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -43,10 +46,15 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="TFlex.DOCs.Model">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\T-FLEX DOCs 15 (15.0.1.6)\Program\TFlex.DOCs.Model.dll</HintPath>
+    <Reference Include="TFlex.DOCs.Model, Version=14.4.0.100, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\T-FLEX DOCs 15 (15.0.1.6)\Program\TFlex.DOCs.Model.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="Wpf_SyncCompositionPE, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Wpf_SyncCompositionPE\bin\Debug\Wpf_SyncCompositionPE.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -54,12 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Wpf_SyncCompositionPE\Wpf_SyncCompositionPE.csproj">
-      <Project>{EB8E5C71-EDD6-4098-A93E-A301D04B03E0}</Project>
-      <Name>Wpf_SyncCompositionPE</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

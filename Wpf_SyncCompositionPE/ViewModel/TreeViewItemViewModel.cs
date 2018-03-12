@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Wpf_SyncCompositionPE.ViewModel
 {
@@ -18,7 +16,11 @@ namespace Wpf_SyncCompositionPE.ViewModel
         static TreeViewItemViewModel DummyChild = new TreeViewItemViewModel();
 
         readonly ObservableCollection<TreeViewItemViewModel> _children;
+
         readonly TreeViewItemViewModel _parent;
+
+        readonly TreeViewModel _treeViewModel;
+
 
         bool _isExpanded;
         bool _isSelected;
@@ -27,11 +29,15 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         #region Constructors
 
-        protected TreeViewItemViewModel(TreeViewItemViewModel parent, bool lazyLoadChildren)
+
+
+        protected TreeViewItemViewModel(TreeViewItemViewModel parent, bool lazyLoadChildren = false)
         {
             _parent = parent;
 
             _children = new ObservableCollection<TreeViewItemViewModel>();
+
+            _treeViewModel = this as TreeViewModel;
 
             if (lazyLoadChildren)
                 _children.Add(DummyChild);
@@ -45,6 +51,11 @@ namespace Wpf_SyncCompositionPE.ViewModel
         #endregion // Constructors
 
         #region Presentation Members
+
+        public string Name
+        {
+            get { return _treeViewModel.Name; }
+        }
 
         #region Children
 
@@ -81,17 +92,18 @@ namespace Wpf_SyncCompositionPE.ViewModel
             get { return _isExpanded; }
             set
             {
+
                 if (value != _isExpanded)
                 {
                     _isExpanded = value;
-                    this.OnPropertyChanged("IsExpanded");
+                    this.RaisePropertyChanged("IsExpanded");
                 }
 
-                // Разверните весь путь до корня.
+                // Expand all the way up to the root.
                 if (_isExpanded && _parent != null)
                     _parent.IsExpanded = true;
 
-                // Если нужно, ленив загружать дочерние элементы.
+                // Lazy load the child items, if necessary.
                 if (this.HasDummyChild)
                 {
                     this.Children.Remove(DummyChild);
@@ -110,13 +122,13 @@ namespace Wpf_SyncCompositionPE.ViewModel
         /// </summary>
         public bool IsSelected
         {
-            get { return _isSelected; }
+            get {  return _isSelected; }
             set
             {
                 if (value != _isSelected)
                 {
                     _isSelected = value;
-                    this.OnPropertyChanged("IsSelected");
+                    this.RaisePropertyChanged("IsSelected");
                 }
             }
         }
@@ -131,7 +143,30 @@ namespace Wpf_SyncCompositionPE.ViewModel
         /// </summary>
         protected virtual void LoadChildren()
         {
+
         }
+        public void clearAllCheckboxes(TreeViewModel data)
+        {
+            if ((bool)data.IsObjectToSync == true && data.Visibility == "Visible")
+                data.IsObjectToSync = false;
+            
+            foreach (var child in data.Children.OfType<TreeViewModel>())
+                clearAllCheckboxes(child);
+            
+        }
+
+        public void MarkAllParents(TreeViewModel data)
+        {
+
+            if (data == null) return;
+
+            if ((bool)data.IsObjectToSync == false && data.Visibility == "Collapsed")
+                data.IsObjectToSync = true;
+
+
+            MarkAllParents(data.Parent as TreeViewModel);
+        }
+
 
         #endregion // LoadChildren
 
@@ -144,8 +179,21 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         #endregion // Parent
 
-        #endregion // Presentation Members
+        #region NameContainsText
 
+        public bool NameContainsText(string text)
+        {
+            if (String.IsNullOrEmpty(text) || String.IsNullOrEmpty(this.Name))
+                return false;
+
+            return this.Name.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) > -1;
+        }
+
+        #endregion // NameContainsText
+
+
+
+        #endregion // Presentation Members
 
     }
 }

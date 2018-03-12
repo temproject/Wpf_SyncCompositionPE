@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TFlex.DOCs.Model.References;
 
-namespace WpfApp_TreeSyncCompositionWork.Model
+namespace Wpf_SyncCompositionPE.Model
 {
     static public class Factory
     {

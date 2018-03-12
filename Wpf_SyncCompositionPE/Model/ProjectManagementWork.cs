@@ -9,7 +9,7 @@ using TFlex.DOCs.Model.References;
 using TFlex.DOCs.Utils;
 using TFlexDOCsPM = TFlex.DOCs.References.ProjectManagement;
 
-namespace WpfApp_TreeSyncCompositionWork.Model
+namespace Wpf_SyncCompositionPE.Model
 {
     /// <summary>
     /// Информационный класс Элемент проекта - Управления проектами
@@ -622,7 +622,7 @@ namespace WpfApp_TreeSyncCompositionWork.Model
         {
             ObservableCollection<ReferenceObject> detailingProjects = new ObservableCollection<ReferenceObject>();
             Guid guidЗависимости = new Guid();
-            var PMref = WpfApp_TreeSyncCompositionWork.Model.References.ProjectManagementReference;
+            var PMref = Wpf_SyncCompositionPE.Model.References.ProjectManagementReference;
             foreach (var зависимость in ЗависимостиДетализации)
             {
                 guidЗависимости = зависимость[Synchronization.SynchronizationParameterGuids.param_SlaveProject_Guid].GetGuid();

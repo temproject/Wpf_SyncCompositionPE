@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace WpfApp_TreeSyncCompositionWork.Infrastructure
+namespace Wpf_SyncCompositionPE.Infrastructure
 {
     public class RelayCommand : ICommand
     {

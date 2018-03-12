@@ -1,7 +1,7 @@
 ﻿using System;
 using TFlex.DOCs.Model.References;
 
-namespace WpfApp_TreeSyncCompositionWork.Model
+namespace Wpf_SyncCompositionPE.Model
 {
     /// <summary>
     /// Для работы с используемыми ресурсами в УП

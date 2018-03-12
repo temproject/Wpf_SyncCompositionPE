@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace WpfApp_TreeSyncCompositionWork.Model
+namespace Wpf_SyncCompositionPE.Model
 {
     public interface ITreeNode
     {

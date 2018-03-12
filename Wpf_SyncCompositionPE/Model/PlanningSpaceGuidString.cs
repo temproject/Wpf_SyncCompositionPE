@@ -1,4 +1,4 @@
-﻿namespace WpfApp_TreeSyncCompositionWork.Model
+﻿namespace Wpf_SyncCompositionPE.Model
 {
     struct PlanningSpaceGuidString
     {

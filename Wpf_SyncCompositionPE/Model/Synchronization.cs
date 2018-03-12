@@ -9,10 +9,10 @@ using TFlex.DOCs.Model.References;
 using TFlex.DOCs.Model.Search;
 using TFlex.DOCs.References.ProjectManagement;
 using Wpf_SyncCompositionPE.ViewModel;
-using WpfApp_TreeSyncCompositionWork.Model;
+using Wpf_SyncCompositionPE.Model;
+using System.Threading;
 
-
-namespace WpfApp_TreeSyncCompositionWork.Model
+namespace Wpf_SyncCompositionPE.Model
 {
     /// <summary>
     /// Для работы с синхронизацией в УП
@@ -79,6 +79,104 @@ namespace WpfApp_TreeSyncCompositionWork.Model
 
         }
 
+
+        /// <summary>
+        /// Use GetSyncronizedWorks
+        /// Возвращает список синхронизированных работ из указанного пространства планирования
+        /// </summary>
+        /// <param name="work"></param>
+        /// <param name="planningSpaceGuidString"></param>
+        /// <param name="returnOnlyMasterWorks"> если true только укрупнения, если false только детализации</param>
+        /// <returns></returns>
+        public static List<ReferenceObject> GetSynchronizedWorksFromSpace(ProjectManagementWork work,
+            string planningSpaceGuidString, bool? returnOnlyMasterWorks = null)
+        {
+            if (string.IsNullOrEmpty(planningSpaceGuidString))
+                planningSpaceGuidString = Guid.Empty.ToString();
+
+            return GetSynchronizedWorksFromSpace(work.ReferenceObject, planningSpaceGuidString, returnOnlyMasterWorks);
+        }
+
+        /// <summary>
+        /// Use GetSyncronizedWorks
+        /// Возвращает список синхронизированных работ из указанного пространства планирования
+        /// </summary>
+        /// <param name="work"></param>
+        /// <param name="planningSpaceGuidString"></param>
+        /// <param name="returnOnlyMasterWorks"> если true только укрупнения, если false только детализации</param>
+        /// <returns></returns>
+        public static List<ReferenceObject> GetSynchronizedWorksFromSpace(ReferenceObject work,
+            string planningSpaceGuidString, bool? returnOnlyMasterWorks = null)
+        {
+            if (string.IsNullOrEmpty(planningSpaceGuidString))
+                planningSpaceGuidString = Guid.Empty.ToString();
+
+            string guidStringForSearch = work.SystemFields.Guid.ToString();
+            List<ReferenceObject> DependenciesObjects = GetDependenciesObjects(returnOnlyMasterWorks, guidStringForSearch);
+
+            List<ReferenceObject> result = new List<ReferenceObject>();
+            foreach (var guidPE in getListGuidObjectsByFilter(DependenciesObjects, work))
+            {
+                var PE = References.ProjectManagementReference.Find(guidPE);
+
+                if (PE == null) { continue; }
+
+                ProjectManagementWork tempWork = new ProjectManagementWork(PE);
+
+                if (tempWork.PlanningSpace.ToString() == planningSpaceGuidString)
+                {
+                    result.Add(References.ProjectManagementReference.Find(guidPE));
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Возвращает список синхронизированных работ из указанного пространства планирования
+        /// </summary>
+        /// <param name="work"></param>
+        /// <param name="planningSpaceGuidString"></param>
+        /// <param name="returnOnlyMasterWorks"> если true только укрупнения, если false только детализации</param>
+        /// <returns></returns>
+        public static List<ReferenceObject> GetSynchronizedWorks(ProjectManagementWork work, bool? returnOnlyMasterWorks)
+        {
+            return GetSynchronizedWorks(work.ReferenceObject, returnOnlyMasterWorks);
+
+        }
+
+        /// <summary>
+        /// Возвращает список синхронизированных работ из указанного пространства планирования
+        /// </summary>
+        /// <param name="work"></param>
+        /// <param name="planningSpaceGuidString"></param>
+        /// <param name="returnOnlyMasterWorks"> если true только укрупнения, если false только детализации</param>
+        /// <returns></returns>
+        public static List<ReferenceObject> GetSynchronizedWorks(ReferenceObject work, bool? returnOnlyMasterWorks)
+        {
+            //if (string.IsNullOrEmpty(planningSpaceGuidString))
+            //    planningSpaceGuidString = Guid.Empty.ToString();
+
+            string guidStringForSearch = work.SystemFields.Guid.ToString();
+
+            //Получаем список объектов, в качестве условия поиска – сформированный фильтр
+            List<ReferenceObject> DependencyObjects = GetDependenciesObjects(returnOnlyMasterWorks, guidStringForSearch);
+
+            List<ReferenceObject> result = new List<ReferenceObject>();
+            //bool isNeedToFilterByPlanningSpace = !string.IsNullOrWhiteSpace(planningSpaceGuidString);
+            foreach (var guid in getListGuidObjectsByFilter(DependencyObjects, work))
+            {
+                ProjectManagementWork tempWork = new ProjectManagementWork(guid);
+                //if (isNeedToFilterByPlanningSpace && tempWork.PlanningSpace.ToString() != planningSpaceGuidString)
+                //{
+                //    continue;
+                //}
+                result.Add(References.ProjectManagementReference.Find(guid));
+
+            }
+            return result;
+
+        }
+
         /// <summary>
         /// Получаем список объектов, в качестве условия поиска – сформированный фильтр
         /// </summary>
@@ -120,92 +218,6 @@ namespace WpfApp_TreeSyncCompositionWork.Model
             return listSyncWorkGuids;
         }
 
-
-
-        /// <summary>
-        /// Use GetSyncronizedWorks
-        /// Возвращает список синхронизированных работ из указанного пространства планирования
-        /// </summary>
-        /// <param name="work"></param>
-        /// <param name="planningSpaceGuidString"></param>
-        /// <param name="returnOnlyMasterWorks"> если true только укрупнения, если false только детализации</param>
-        /// <returns></returns>
-        public static List<ReferenceObject> GetSynchronizedWorksFromSpace(ProjectManagementWork work,
-            string planningSpaceGuidString, bool? returnOnlyMasterWorks = null)
-        {
-            if (string.IsNullOrEmpty(planningSpaceGuidString))
-                planningSpaceGuidString = Guid.Empty.ToString();
-
-            return GetSynchronizedWorksFromSpace(work.ReferenceObject, planningSpaceGuidString, returnOnlyMasterWorks);
-        }
-
-        /// <summary>
-        /// Use GetSyncronizedWorks
-        /// Возвращает список синхронизированных работ из указанного пространства планирования
-        /// </summary>
-        /// <param name="work"></param>
-        /// <param name="planningSpaceGuidString"></param>
-        /// <param name="returnOnlyMasterWorks"> если true только укрупнения, если false только детализации</param>
-        /// <returns></returns>
-        public static List<ReferenceObject> GetSynchronizedWorksFromSpace(ReferenceObject work,
-            string planningSpaceGuidString, bool? returnOnlyMasterWorks = null)
-        {
-            if (string.IsNullOrEmpty(planningSpaceGuidString))
-                planningSpaceGuidString = Guid.Empty.ToString();
-
-            string guidStringForSearch = work.SystemFields.Guid.ToString();
-            List<ReferenceObject> DependenciesObjects = GetDependenciesObjects(returnOnlyMasterWorks, guidStringForSearch);
-
-            List<ReferenceObject> result = new List<ReferenceObject>();
-            foreach (var guidPE in getListGuidObjectsByFilter(DependenciesObjects, work))
-            {
-                var PE = References.ProjectManagementReference.Find(guidPE);
-
-                if (PE == null) continue;
-
-                ProjectManagementWork tempWork = new ProjectManagementWork(PE);
-
-                if (tempWork.PlanningSpace.ToString() == planningSpaceGuidString)
-                {
-                    result.Add(References.ProjectManagementReference.Find(guidPE));
-                }
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Возвращает список синхронизированных работ из указанного пространства планирования
-        /// </summary>
-        /// <param name="work"></param>
-        /// <param name="planningSpaceGuidString"></param>
-        /// <param name="returnOnlyMasterWorks"> если true только укрупнения, если false только детализации</param>
-        /// <returns></returns>
-        public static List<ProjectManagementWork> GetSynchronizedWorks(ProjectManagementWork work, string planningSpaceGuidString, bool? returnOnlyMasterWorks)
-        {
-            if (string.IsNullOrEmpty(planningSpaceGuidString))
-                planningSpaceGuidString = Guid.Empty.ToString();
-
-            string guidStringForSearch = work.Guid.ToString();
-
-            //Получаем список объектов, в качестве условия поиска – сформированный фильтр
-            List<ReferenceObject> DependencyObjects = GetDependenciesObjects(returnOnlyMasterWorks, guidStringForSearch);
-
-            List<ProjectManagementWork> result = new List<ProjectManagementWork>();
-            bool isNeedToFilterByPlanningSpace = !string.IsNullOrWhiteSpace(planningSpaceGuidString);
-            foreach (var guid in getListGuidObjectsByFilter(DependencyObjects, work))
-            {
-                ProjectManagementWork tempWork = new ProjectManagementWork(guid);
-                if (isNeedToFilterByPlanningSpace && tempWork.PlanningSpace.ToString() != planningSpaceGuidString)
-                {
-                    continue;
-                }
-                result.Add(new ProjectManagementWork(guid));
-
-            }
-            return result;
-
-        }
-
         /// <summary>
         /// Получить список зависимостей типа синхранизация
         /// </summary>
@@ -216,17 +228,28 @@ namespace WpfApp_TreeSyncCompositionWork.Model
         {
             return GetDependenciesObjects(returnOnlyMasterWorks, work.Guid.ToString());
         }
-
-
-
-        public static void SynchronizingСomposition(TreeViewModel treeViewModel, bool IsCopyRes, bool IsCopyOnlyPlan)
+        /// <summary>
+        /// Получить список зависимостей типа синхранизация
+        /// </summary>
+        /// <param name="returnOnlyMasterWorks">true - список зависимостей (укрупнение)</param>
+        /// <param name="work"></param>
+        /// <returns></returns>
+        public static List<ReferenceObject> GetDependenciesObjects(bool? returnOnlyMasterWorks, ReferenceObject work)
         {
+            return GetDependenciesObjects(returnOnlyMasterWorks, work.SystemFields.Guid.ToString());
+        }
+
+        static MainWindowViewModel MainWindowViewModel = null;
+
+        public static void SynchronizingСomposition(TreeViewModel treeViewModel, bool IsCopyRes, bool IsCopyOnlyPlan/*, ref int amountAddObjects*/, MainWindowViewModel mainWindowViewModel = null)
+        {
+            if (MainWindowViewModel == null)
+                MainWindowViewModel = mainWindowViewModel;
 
             ReferenceObject Parent = treeViewModel.PEForSync;
 
             if (Parent != null)
-                Parent = syncComposition(treeViewModel, IsCopyRes, IsCopyOnlyPlan);
-
+                Parent = syncComposition(treeViewModel, IsCopyRes, IsCopyOnlyPlan/*, ref amountAddObjects*/);
 
             foreach (TreeViewModel treeViewModelItem in treeViewModel.Children)
             {
@@ -234,17 +257,14 @@ namespace WpfApp_TreeSyncCompositionWork.Model
                 {
                     treeViewModelItem.PEForSync = Parent;
                 }
-
-
-                SynchronizingСomposition(treeViewModelItem, IsCopyRes, IsCopyOnlyPlan);
+                SynchronizingСomposition(treeViewModelItem, IsCopyRes, IsCopyOnlyPlan/*, ref amountAddObjects*/);
             }
-
         }
 
-
-
-        static private ReferenceObject syncComposition(TreeViewModel pe_treeItem, bool IsCopyRes, bool IsCopyOnlyPlan)
+        static private ReferenceObject syncComposition(TreeViewModel pe_treeItem, bool IsCopyRes, bool IsCopyOnlyPlan/*, ref int amountAddObjects*/)
         {
+
+            #region
             if ((bool)pe_treeItem.IsObjectToSync)
             {
                 /* Если синхронизация отсутствует, то создаём новую работу в плане РП 
@@ -269,6 +289,9 @@ namespace WpfApp_TreeSyncCompositionWork.Model
 
                 if (newPE != null)
                 {
+
+                    //amountAddObjects++;
+
                     ProjectManagementWork.RecalcResourcesWorkLoad(newPE);
                     //Console.WriteLine("Синхронизирование элемент {0} в укрупнении {1}", pe_treeItem.Name, pe_treeItem.PEForSync.ToString());
                     /*   newPE.ReferenceObject.EndChanges()*/
@@ -284,14 +307,12 @@ namespace WpfApp_TreeSyncCompositionWork.Model
     (newPE, pe_treeItem.ProjectElement, ProjectManagementWork.GetProject(newPE)[ProjectManagementWork.PM_param_PlanningSpace_GUID].GetGuid(), onlyPlanningRes: IsCopyOnlyPlan);
                     }
 
-
                     SyncronizeWorks(newPE, pe_treeItem.ProjectElement);
 
                     return newPE;
                 }
-
-
             }
+            #endregion
             return null;
         }
 

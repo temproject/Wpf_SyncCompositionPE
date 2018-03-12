@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using TFlex.DOCs.Model.References;
 
-namespace WpfApp_TreeSyncCompositionWork.Model
+namespace Wpf_SyncCompositionPE.Model
 {
     public class ProjectTreeItem : ITreeNode
     {

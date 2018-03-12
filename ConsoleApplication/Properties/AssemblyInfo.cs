@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ConsoleApplication")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Starter")]
+[assembly: AssemblyDescription("Позволяет запускать разработанные программы для T FLEX DOCS из visual studio")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Dinamika")]
 [assembly: AssemblyProduct("ConsoleApplication")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]

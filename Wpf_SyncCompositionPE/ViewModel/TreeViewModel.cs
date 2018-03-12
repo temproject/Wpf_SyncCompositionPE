@@ -1,15 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using TFlex.DOCs.Model.References;
-using WpfApp_TreeSyncCompositionWork.Model;
+using Wpf_SyncCompositionPE.Model;
+using Wpf_SyncCompositionPE.Properties;
 
 namespace Wpf_SyncCompositionPE.ViewModel
 {
     public class TreeViewModel : TreeViewItemViewModel
     {
+
+        public static int GetActiveInstances()
+        {
+            return Instances;
+        }
+
+        static public int Instances = 0;
+        static public double PercentTreeBuild = 0;
+        static public int AmountAllItemsTree = 0;
+
+        ~TreeViewModel()
+        {
+            Interlocked.Decrement(ref Instances);
+            //if (MainWindowViewModel != null)
+            //    MainWindowViewModel.InstanceNumber = Instances;
+        }
+
         ReferenceObject _projectElement;
 
         public ReferenceObject ProjectElement
@@ -18,24 +39,56 @@ namespace Wpf_SyncCompositionPE.ViewModel
             set { _projectElement = value; }
         }
 
-        public TreeViewModel(ReferenceObject projectElement, TreeViewModel parent)
-         : base(parent, true)
+        static public MainWindowViewModel MainWindowViewModel;
+
+        static TreeViewModel()
         {
+            MainWindowViewModel = null;
+            Instances = 0;
+            PercentTreeBuild = 0;
+            AmountAllItemsTree = 0;
+        }
+
+        public TreeViewModel(ReferenceObject projectElement, TreeViewModel parent, ReferenceObject startSelectBiggerPE = null/*, MainWindowViewModel mainWindowViewModel = null*/)
+         : base(parent, false)
+        {
+
+            //if (MainWindowViewModel == null)
+            //    MainWindowViewModel = mainWindowViewModel;
+
+            if (Instances == 0)
+                AmountAllItemsTree = projectElement.Children.RecursiveLoad().Count;
+
+            var percent = Math.Round(100.0 * Instances / AmountAllItemsTree);
+
+            PercentTreeBuild = percent == 0 ? 1 : percent;
+
+            //MainWindowViewModel.Percent = PercentTreeBuild;
+
+            if (startSelectBiggerPE != null)
+                _startSelectBiggerPE = startSelectBiggerPE;
+
             ProjectElement = projectElement;
 
-            if (parent == null)
-                IsObjectToSync = false;
+            Interlocked.Increment(ref Instances);
 
             // Начинаем обрабатывать элементы начиная с корня.
+            //if (ProjectElement != projectElement)
             LoadChildren();
+
+            if (parent == null && this.IsExpanded == false)
+                ContainsObjSync = false;
         }
+
         protected override void LoadChildren()
         {
+            this.IsExpanded = (bool)this.IsObjectToSync;
+
             foreach (var child in ProjectElement.Children)
             {
                 var d = new TreeViewModel(child, this);
+
                 base.Children.Add(d);
-                d.IsExpanded = true;
             }
         }
 
@@ -54,7 +107,8 @@ namespace Wpf_SyncCompositionPE.ViewModel
                 if (укрупнения == null)
                     укрупнения = new List<ReferenceObject>();
 
-                укрупнения = Synchronization.GetSynchronizedWorksFromSpace(ProjectElement, null, true);
+                укрупнения = Synchronization.GetSynchronizedWorks(ProjectElement, true);
+
                 return укрупнения;
             }
             set
@@ -65,18 +119,20 @@ namespace Wpf_SyncCompositionPE.ViewModel
         }
 
 
-        static private ReferenceObject startSelectBiggerPE;
+        static private ReferenceObject _startSelectBiggerPE;
 
         /// <summary>
         /// Выбранный элемент проекта с которого запускается диалог
         /// </summary>
         public ReferenceObject StartSelectBiggerPE
         {
-            get { return startSelectBiggerPE; }
+            get { return _startSelectBiggerPE; }
             set
             {
+                if (_startSelectBiggerPE == value) return;
 
-                startSelectBiggerPE = value;
+                _startSelectBiggerPE = value;
+
                 if (_projectStartSelectBiggerPE == null)
                     _projectStartSelectBiggerPE = ProjectStartSelectBiggerPE;
             }
@@ -91,7 +147,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         {
             get
             {
-                if (_projectStartSelectBiggerPE == null)
+                //if (_projectStartSelectBiggerPE == null)
                 {
                     if (StartSelectBiggerPE.Class.Name != "Проект")
                         _projectStartSelectBiggerPE = ProjectManagementWork.GetProject(StartSelectBiggerPE);
@@ -100,8 +156,6 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
                     return _projectStartSelectBiggerPE;
                 }
-
-                return _projectStartSelectBiggerPE;
             }
         }
 
@@ -112,25 +166,19 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         void check()
         {
-
-
-
             //если дочерний элементе детализации не синхронизирован укрупнением родительского элемента
             //то такой дочерний элемент доступен для синхронизации 
             if ((MainWindowViewModel.IsListNullOrEmpty(Укрупнения) ||
               !Укрупнения.Any(pmw => ProjectManagementWork.GetProject(pmw) == ProjectStartSelectBiggerPE)))
             {
 
-
                 if (!ProjectElement.Children.Any(ch => ch == ProjectStartSelectBiggerPE))
                 {
-                    ContainsObjSync = true;
-
                     _isObjectToSync = true;
+                    containsObjSync = true;
                 }
 
-
-                List<ReferenceObject> УкрупненияДетализации = Synchronization.GetSynchronizedWorksFromSpace(ProjectElement.Parent, null, true);
+                List<ReferenceObject> УкрупненияДетализации = Synchronization.GetSynchronizedWorks(ProjectElement.Parent, true);
 
                 if (!MainWindowViewModel.IsListNullOrEmpty(УкрупненияДетализации))
                     PEForSync = УкрупненияДетализации.FirstOrDefault(pe => ProjectManagementWork.GetProject(pe) == ProjectStartSelectBiggerPE);
@@ -141,7 +189,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
             }
         }
 
-        private bool? _isObjectToSync = null;
+        bool? _isObjectToSync = null;
 
         /// <summary>
         /// Флаг элемента проекта который нужно синхронизировать
@@ -157,15 +205,42 @@ namespace Wpf_SyncCompositionPE.ViewModel
             }
             set
             {
-                OnPropertyChanged("IsObjectToSync");
+
+                if (_isObjectToSync == value) return;
+
                 _isObjectToSync = value;
+
+
+                if (false == _isObjectToSync)
+                {
+                    base.clearAllCheckboxes(this);
+                }
+                else
+                {
+                    base.MarkAllParents(this.Parent as TreeViewModel);
+                }
+                RaisePropertyChanged("IsObjectToSync");
             }
         }
 
+        static bool containsObjSync = false;
         /// <summary>
         /// Соддержит данные для синхронизации
         /// </summary>
-        public bool ContainsObjSync { get; set; }
+        public bool ContainsObjSync
+        {
+            get
+            {
+                return containsObjSync;
+            }
+            set
+            {
+
+                containsObjSync = value;
+
+                RaisePropertyChanged("ContainsObjSync");
+            }
+        }
 
 
         private string visibility = "Collapsed";
@@ -193,18 +268,38 @@ namespace Wpf_SyncCompositionPE.ViewModel
         //}
 
 
+        private ImageSource _pathIcon = null;
 
-
-        public string PathIcon
+        public ImageSource PathIcon
         {
             get
             {
-                if (IsProject)
-                    return @"C:\Users\Kachkov\Source\Repos\First\WpfApp_TreeSyncCompositionWork\WpfApp_TreeSyncCompositionWork\Images\Project.ico";
-                else
+                if (_pathIcon == null)
                 {
-                    return @"C:\Users\Kachkov\Source\Repos\First\WpfApp_TreeSyncCompositionWork\WpfApp_TreeSyncCompositionWork\Images\PE.ico";
+                    Icon icon = Resources.PE;
+
+                    if (IsProject)
+                        icon = Resources.project;
+
+                    //Bitmap bitmap = icon.ToBitmap();
+                    //IntPtr hBitmap = bitmap.GetHbitmap();
+
+                    //ImageSource wpfBitmap = Imaging.CreateBitmapSourceFromHBitmap(
+                    //    hBitmap,
+                    //    IntPtr.Zero,
+                    //    Int32Rect.Empty,
+                    //    BitmapSizeOptions.FromEmptyOptions());
+                    //return wpfBitmap;
+                    using (Bitmap bmp = icon.ToBitmap())
+                    {
+                        var stream = new MemoryStream();
+                        bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                        _pathIcon = BitmapFrame.Create(stream);
+                    }
+
+
                 }
+                return _pathIcon;
             }
 
         }
@@ -277,7 +372,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         private string _name;
 
 
-        public string Name
+        public new string Name
         {
             get
             {

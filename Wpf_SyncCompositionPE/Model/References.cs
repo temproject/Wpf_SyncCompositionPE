@@ -4,7 +4,7 @@ using TFlex.DOCs.Model.Classes;
 using TFlex.DOCs.Model.References;
 using TFlex.DOCs.Model.References.Users;
 
-namespace WpfApp_TreeSyncCompositionWork.Model
+namespace Wpf_SyncCompositionPE.Model
 {
     internal class References
     {

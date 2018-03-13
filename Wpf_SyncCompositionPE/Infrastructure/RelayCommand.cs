@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Wpf_SyncCompositionPE.Infrastructure
@@ -49,7 +45,5 @@ namespace Wpf_SyncCompositionPE.Infrastructure
         {
             _execute.Invoke(parameter);
         }
-
-
     }
 }

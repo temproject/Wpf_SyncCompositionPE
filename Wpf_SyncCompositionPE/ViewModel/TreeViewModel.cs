@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -21,8 +20,8 @@ namespace Wpf_SyncCompositionPE.ViewModel
         }
 
         static public int Instances = 0;
-        static public double PercentTreeBuild = 0;
-        static public int AmountAllItemsTree = 0;
+        //static public double PercentTreeBuild = 0;
+        //static public int AmountAllItemsTree = 0;
 
         ~TreeViewModel()
         {
@@ -39,14 +38,14 @@ namespace Wpf_SyncCompositionPE.ViewModel
             set { _projectElement = value; }
         }
 
-        static public MainWindowViewModel MainWindowViewModel;
+        //static public MainWindowViewModel MainWindowViewModel;
 
         static TreeViewModel()
         {
-            MainWindowViewModel = null;
+            //MainWindowViewModel = null;
             Instances = 0;
-            PercentTreeBuild = 0;
-            AmountAllItemsTree = 0;
+            //PercentTreeBuild = 0;
+            //AmountAllItemsTree = 0;
         }
 
         public TreeViewModel(ReferenceObject projectElement, TreeViewModel parent, ReferenceObject startSelectBiggerPE = null/*, MainWindowViewModel mainWindowViewModel = null*/)
@@ -56,12 +55,12 @@ namespace Wpf_SyncCompositionPE.ViewModel
             //if (MainWindowViewModel == null)
             //    MainWindowViewModel = mainWindowViewModel;
 
-            if (Instances == 0)
-                AmountAllItemsTree = projectElement.Children.RecursiveLoad().Count;
+            //if (Instances == 0)
+            //    AmountAllItemsTree = projectElement.Children.RecursiveLoad().Count;
 
-            var percent = Math.Round(100.0 * Instances / AmountAllItemsTree);
+            //var percent = Math.Round(100.0 * Instances / AmountAllItemsTree);
 
-            PercentTreeBuild = percent == 0 ? 1 : percent;
+            //PercentTreeBuild = percent == 0 ? 1 : percent;
 
             //MainWindowViewModel.Percent = PercentTreeBuild;
 
@@ -82,7 +81,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         protected override void LoadChildren()
         {
-            this.IsExpanded = (bool)this.IsObjectToSync;
+            this.IsExpanded = (bool)this.IsSelectObjToSynch;
 
             foreach (var child in ProjectElement.Children)
             {
@@ -174,8 +173,9 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
                 if (!ProjectElement.Children.Any(ch => ch == ProjectStartSelectBiggerPE))
                 {
-                    _isObjectToSync = true;
+                    _isSelectObjToSynch = true;
                     containsObjSync = true;
+                    _isObjectToSync = true;
                 }
 
                 List<ReferenceObject> УкрупненияДетализации = Synchronization.GetSynchronizedWorks(ProjectElement.Parent, true);
@@ -185,41 +185,67 @@ namespace Wpf_SyncCompositionPE.ViewModel
             }
             else
             {
+                _isSelectObjToSynch = false;
                 _isObjectToSync = false;
             }
         }
 
-        bool? _isObjectToSync = null;
+        bool _isObjectToSync = false;
 
         /// <summary>
-        /// Флаг элемента проекта который нужно синхронизировать
+        /// Объект для синхронизации
         /// </summary>
-        public bool? IsObjectToSync
+        public bool IsObjectToSync
         {
             get
             {
-                if (_isObjectToSync == null)
-                    check();
-
                 return _isObjectToSync;
             }
             set
             {
-
                 if (_isObjectToSync == value) return;
 
                 _isObjectToSync = value;
 
+                if ((bool)IsSelectObjToSynch)
+                {
+                    if (false == _isObjectToSync)
+                    {
+                        base.clearAllCheckboxes(this);
+                    }
+                    else
+                    {
+                        base.MarkAllParents(this.Parent as TreeViewModel);
+                    }
+                }
 
-                if (false == _isObjectToSync)
-                {
-                    base.clearAllCheckboxes(this);
-                }
-                else
-                {
-                    base.MarkAllParents(this.Parent as TreeViewModel);
-                }
+
                 RaisePropertyChanged("IsObjectToSync");
+
+            }
+        }
+
+        bool? _isSelectObjToSynch = null;
+
+        /// <summary>
+        /// Этот объект можно выбрать для синхронизации
+        public bool? IsSelectObjToSynch
+        {
+            get
+            {
+                if (_isSelectObjToSynch == null)
+                    check();
+
+                return _isSelectObjToSynch;
+            }
+            set
+            {
+
+                if (_isSelectObjToSynch == value) return;
+
+                _isSelectObjToSynch = value;
+
+                RaisePropertyChanged("IsSelectObjToSynch");
             }
         }
 
@@ -242,23 +268,30 @@ namespace Wpf_SyncCompositionPE.ViewModel
             }
         }
 
-
-        private string visibility = "Collapsed";
+        private string visibilityCheckBox = "Collapsed";
 
         /// <summary>
         /// Флаг отвечающий за отображение чекбокса в дереве
         /// </summary>
-        public string Visibility
+        public string VisibilityCheckBox
         {
             get
             {
-                if ((bool)IsObjectToSync)
-                    visibility = "Visible";
-                else
-                    visibility = "Collapsed";
+                bool ShowCheckBox = (bool)IsSelectObjToSynch;//нужно отобразить чекбокс
 
-                return visibility;
+                if (ShowCheckBox == true)//нужно отобразить - показываем 
+                    visibilityCheckBox = "Visible";
+                
+                else 
+                    visibilityCheckBox = "Collapsed";
+
+                return visibilityCheckBox;
             }
+            //set
+            //{
+            //    visibilityCheckBox = value;
+            //    RaisePropertyChanged("VisibilityCheckBox");
+            //}
         }
 
         //public int Id
@@ -379,7 +412,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
                 if (string.IsNullOrEmpty(_name))
                 {
                     if (this.ProjectElement != null)
-                        _name = this.ProjectElement[ProjectManagementWork.PM_param_Name_GUID].GetString();
+                        _name = "  "+this.ProjectElement[ProjectManagementWork.PM_param_Name_GUID].GetString();
                     else _name = "null";
                 }
 

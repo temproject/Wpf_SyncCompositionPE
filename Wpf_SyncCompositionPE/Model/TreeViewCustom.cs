@@ -132,7 +132,6 @@ namespace Wpf_SyncCompositionPE.Model
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-
             //Если значение равно null, ничего не возвращайте
             if (value == null) return null;
 
@@ -143,6 +142,7 @@ namespace Wpf_SyncCompositionPE.Model
                 DependencyObject Element = value as DependencyObject;
                 //Создайте счетчик уровня со значением, установленным на -1
                 int Level = -1;
+
                 //Переместите визуальное дерево и подсчитайте количество TreeViewItem.
                 for (; Element != null; Element = VisualTreeHelper.GetParent(Element))
                     //Проверьте, является ли текущий элемент TreeViewItem
@@ -152,26 +152,6 @@ namespace Wpf_SyncCompositionPE.Model
                         //Увеличить счетчик уровня
                         Level++;
 
-                        //bool flag = false;
-
-                        //var treeViewItem = (TreeViewItem)Element;
-
-                        //foreach (var item in treeViewItem.Items)
-                        //{
-                        //    if (flag == false)
-                        //    {
-                        //        var d = item as TreeViewModel;
-                        //        if ((bool)d.IsObjectToSync == true)
-                        //        {
-                        //            Console.WriteLine(d.Name + " " + d.IsObjectToSync);
-                        //            flag = true;
-                        //        }
-                                  
-                        //    }
-                        //}
-
-                        //if (treeViewItem.IsExpanded == false)
-                        //treeViewItem.IsExpanded = true;
                     }
 
                 //Вернуть отступ как двойной

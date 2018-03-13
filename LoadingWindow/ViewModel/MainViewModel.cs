@@ -1,12 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
-
 using System;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 
 namespace LoadingWindow.ViewModel
 {
@@ -19,93 +13,93 @@ namespace LoadingWindow.ViewModel
     public class MainViewModel : ViewModelBase
     {
 
-        #region свойствва для вычисления процента
-        /// <summary>
-        /// The <see cref="NumberAllIterations" /> property's name.
-        /// </summary>
-        public const string NumberAllIterationsPropertyName = "NumberAllIterations";
+        //#region свойствва для вычисления процента
+        ///// <summary>
+        ///// The <see cref="NumberAllIterations" /> property's name.
+        ///// </summary>
+        //public const string NumberAllIterationsPropertyName = "NumberAllIterations";
 
-        private int _numberAllIterationsProperty = 0;
+        //private int _numberAllIterationsProperty = 0;
 
-        /// <summary>
-        /// Sets and gets the NumberAllIterations property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public int NumberAllIterations
-        {
-            get
-            {
-                return _numberAllIterationsProperty;
-            }
+        ///// <summary>
+        ///// Sets and gets the NumberAllIterations property.
+        ///// Changes to that property's value raise the PropertyChanged event. 
+        ///// </summary>
+        //public int NumberAllIterations
+        //{
+        //    get
+        //    {
+        //        return _numberAllIterationsProperty;
+        //    }
 
-            set
-            {
-                if (_numberAllIterationsProperty == value)
-                {
-                    return;
-                }
+        //    set
+        //    {
+        //        if (_numberAllIterationsProperty == value)
+        //        {
+        //            return;
+        //        }
 
-                _numberAllIterationsProperty = value;
-                RaisePropertyChanged(NumberAllIterationsPropertyName);
-            }
-        }
+        //        _numberAllIterationsProperty = value;
+        //        RaisePropertyChanged(NumberAllIterationsPropertyName);
+        //    }
+        //}
 
-        /// <summary>
-        /// The <see cref="CurrentIterationNumberPropertyName" /> property's name.
-        /// </summary>
-        public const string CurrentIterationNumberPropertyName = "CurrentIterationNumberPropertyName";
+        ///// <summary>
+        ///// The <see cref="CurrentIterationNumberPropertyName" /> property's name.
+        ///// </summary>
+        //public const string CurrentIterationNumberPropertyName = "CurrentIterationNumberPropertyName";
 
-        private int _currentIterationNumber = 0;
+        //private int _currentIterationNumber = 0;
 
-        /// <summary>
-        /// Sets and gets the CurrentIterationNumberPropertyName property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public int CurrentIterationNumber
-        {
-            get
-            {
-                return _currentIterationNumber;
-            }
+        ///// <summary>
+        ///// Sets and gets the CurrentIterationNumberPropertyName property.
+        ///// Changes to that property's value raise the PropertyChanged event. 
+        ///// </summary>
+        //public int CurrentIterationNumber
+        //{
+        //    get
+        //    {
+        //        return _currentIterationNumber;
+        //    }
 
-            set
-            {
-                if (_currentIterationNumber == value)
-                {
-                    return;
-                }
+        //    set
+        //    {
+        //        if (_currentIterationNumber == value)
+        //        {
+        //            return;
+        //        }
 
-                _currentIterationNumber = value;
-                RaisePropertyChanged(CurrentIterationNumberPropertyName);
-            }
-        }
+        //        _currentIterationNumber = value;
+        //        RaisePropertyChanged(CurrentIterationNumberPropertyName);
+        //    }
+        //}
 
-        /// <summary>
-        /// The <see cref="Percent" /> property's name.
-        /// </summary>
-        public const string PercentProperty = "Percent";
+        ///// <summary>
+        ///// The <see cref="Percent" /> property's name.
+        ///// </summary>
+        //public const string PercentProperty = "Percent";
 
-        private string _percent = string.Empty;
+        //private string _percent = string.Empty;
 
-        /// <summary>
-        /// Возвращает свойство WelcomeTitle.
-        /// Изменения значения этого свойства вызывает событие PropertyChanged.
-        /// </summary>
-        public string Percent
-        {
-            get
-            {
-                return _percent = Math.Round(100.0 * CurrentIterationNumber / NumberAllIterations).ToString() + "%"; 
-            }
-            set
-            {
-                Set(ref _percent, value, PercentProperty);
-                //RaisePropertyChanged(PercentProperty);
-                //Messenger.Default.Send(Percent, "Hello!");
-            }
-        }
+        ///// <summary>
+        ///// Возвращает свойство WelcomeTitle.
+        ///// Изменения значения этого свойства вызывает событие PropertyChanged.
+        ///// </summary>
+        //public string Percent
+        //{
+        //    get
+        //    {
+        //        return _percent = Math.Round(100.0 * CurrentIterationNumber / NumberAllIterations).ToString() + "%"; 
+        //    }
+        //    set
+        //    {
+        //        Set(ref _percent, value, PercentProperty);
+        //        //RaisePropertyChanged(PercentProperty);
+        //        //Messenger.Default.Send(Percent, "Hello!");
+        //    }
+        //}
 
-        #endregion
+        //#endregion
 
         /// <summary>
         /// The <see cref="textProcess" /> property's name.

@@ -21,21 +21,22 @@
                                 <StackPanel Orientation="Horizontal">
                                     <!--Кнопка Expander -->
                                     <TreeView:TreeViewCustomExpander/>
-                                    <CheckBox IsChecked="{Binding IsObjectToSync}"  Visibility="{Binding Visibility}" VerticalAlignment="Center"/>
                                     <Image Width="16" Height="16" Margin="3,0" Source="{Binding PathIcon}" />
+                                    <CheckBox IsChecked="{Binding IsObjectToSync}"  Visibility="{Binding VisibilityCheckBox}" VerticalAlignment="Center"/>
                                     <!--Отобразить имя-->
                                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Width="300"/>
+
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <!-- Создайте первый столбец, содержащий кнопку expand и имя типа .-->
-                    <GridViewColumn Header="Номер" Width="Auto"  >
+                    <GridViewColumn Header="Номер" Width="Auto" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <!--Отобразить имя-->
-                                    <TextBlock Text="{Binding Number}" Width="auto"/>
+                                    <TextBlock Text="{Binding Number}" TextWrapping="Wrap" Width="100"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

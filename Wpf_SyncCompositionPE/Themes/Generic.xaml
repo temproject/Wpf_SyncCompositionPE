@@ -9,7 +9,7 @@
     <TreeView:TreeViewCustomConverter x:Key="TreeViewCustomConverter"/>
 
     <Style TargetType="{x:Type TreeViewItem}">
-        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <!--<Setter Property="HorizontalContentAlignment" Value="Stretch" />-->
         <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
         <Setter Property="FontWeight" Value="Normal" />
@@ -142,7 +142,7 @@
                 Converter={StaticResource TreeViewCustomConverter}}"/>
             <!-- кнопка переключения-->
             <ToggleButton  Style="{StaticResource ExpandCollapseToggleStyle}"  IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor,
-                AncestorType=TreeViewItem}}" />
+                AncestorType=TreeViewItem}}"/>
         </StackPanel>
         <ControlTemplate.Triggers>
             <!--Триггер, используемый для отображения / скрытия кнопки расширения-->

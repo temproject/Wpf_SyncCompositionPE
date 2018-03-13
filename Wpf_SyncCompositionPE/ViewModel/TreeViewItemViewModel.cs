@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -28,8 +29,6 @@ namespace Wpf_SyncCompositionPE.ViewModel
         #endregion // Data
 
         #region Constructors
-
-
 
         protected TreeViewItemViewModel(TreeViewItemViewModel parent, bool lazyLoadChildren = false)
         {
@@ -79,6 +78,14 @@ namespace Wpf_SyncCompositionPE.ViewModel
             get { return this.Children.Count == 1 && this.Children[0] == DummyChild; }
         }
 
+        /// <summary>
+        /// Возвращает true, если имеются дети
+        /// </summary>
+        public bool HasChildren
+        {
+            get { return this.Children.Count > 0 && this.Children[0] != DummyChild; }
+        }
+
         #endregion // HasLoadedChildren
 
         #region IsExpanded
@@ -114,6 +121,30 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         #endregion // IsExpanded
 
+        #region Visibility
+
+        //private string visibility = "Collapsed";
+
+        ///// <summary>
+        ///// Флаг отвечающий за отображение чекбокса в дереве
+        ///// </summary>
+        //public string Visibility
+        //{
+        //    get
+        //    {
+        //        if ((bool)IsObjectToSync)
+        //            visibility = "Visible";
+        //        else
+        //            visibility = "Collapsed";
+
+        //        return visibility;
+        //    }
+        //}
+
+
+
+        #endregion // IsExpanded
+
         #region IsSelected
 
         /// <summary>
@@ -122,7 +153,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         /// </summary>
         public bool IsSelected
         {
-            get {  return _isSelected; }
+            get { return _isSelected; }
             set
             {
                 if (value != _isSelected)
@@ -145,28 +176,31 @@ namespace Wpf_SyncCompositionPE.ViewModel
         {
 
         }
+
         public void clearAllCheckboxes(TreeViewModel data)
         {
-            if ((bool)data.IsObjectToSync == true && data.Visibility == "Visible")
+            if (data == null) return;
+
+            if ((bool)data.IsSelectObjToSynch == false) return;
+
+            if ((bool)data.IsObjectToSync == true)
                 data.IsObjectToSync = false;
-            
+
             foreach (var child in data.Children.OfType<TreeViewModel>())
                 clearAllCheckboxes(child);
-            
         }
 
         public void MarkAllParents(TreeViewModel data)
         {
+            if (data == null) { return; }
 
-            if (data == null) return;
+            if ((bool)data.IsSelectObjToSynch == false) { return; }
 
-            if ((bool)data.IsObjectToSync == false && data.Visibility == "Collapsed")
+            if ((bool)data.IsObjectToSync == false)
                 data.IsObjectToSync = true;
-
 
             MarkAllParents(data.Parent as TreeViewModel);
         }
-
 
         #endregion // LoadChildren
 
@@ -179,21 +213,18 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         #endregion // Parent
 
-        #region NameContainsText
+        //#region NameContainsText
 
-        public bool NameContainsText(string text)
-        {
-            if (String.IsNullOrEmpty(text) || String.IsNullOrEmpty(this.Name))
-                return false;
+        //public bool NameContainsText(string text)
+        //{
+        //    if (String.IsNullOrEmpty(text) || String.IsNullOrEmpty(this.Name))
+        //        return false;
 
-            return this.Name.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) > -1;
-        }
+        //    return this.Name.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) > -1;
+        //}
 
-        #endregion // NameContainsText
-
-
+        //#endregion // NameContainsText
 
         #endregion // Presentation Members
-
     }
 }

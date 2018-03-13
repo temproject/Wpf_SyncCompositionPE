@@ -347,18 +347,14 @@ namespace Wpf_SyncCompositionPE.Model
                 {
                     if (usedResource.IsPlanned)
                     {
-                        //Console.WriteLine("IsOnlyPlanned " + IsOnlyPlanned + " usedResource.IsPlanned true" );
                         NonConsumableResources.Add(usedResource);
                     }
                         
                 }
-
                 else
                 {
-                    //Console.WriteLine("IsOnlyPlanned  false");
                     NonConsumableResources.Add(usedResource);
                 }
-
             }
 
             return NonConsumableResources;

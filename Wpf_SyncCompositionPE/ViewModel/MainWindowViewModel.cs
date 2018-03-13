@@ -6,13 +6,13 @@ using System.Windows.Forms;
 using TFlex.DOCs.Model.References;
 using Wpf_SyncCompositionPE.Infrastructure;
 using Wpf_SyncCompositionPE.Model;
-
 using System.Windows.Input;
 using System.ComponentModel;
 using System.Windows.Threading;
 using System.Windows.Media.Effects;
 using GalaSoft.MvvmLight;
 using LoadingWindow;
+using TFlex.DOCs.Model.Classes;
 
 namespace Wpf_SyncCompositionPE.ViewModel
 {
@@ -397,7 +397,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         /// <param name="parameter"></param>
         public void ExecuteBuildTreeCommand(object parameter)
         {
-            TreeRefresh();
+            StartWorkLoading(TreeBuild);
         }
 
 
@@ -492,25 +492,19 @@ namespace Wpf_SyncCompositionPE.ViewModel
         // этого потока вызвать событие DoWork;
         //static private BackgroundWorker _bgWorkerTreeViewBuild = null;
 
-        static Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
+        Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
-        BlurEffect bf = new BlurEffect();
-        private void TreeRefresh()
+        BlurEffect bf;
+        private void TreeBuild()
         {
-            if (bf == null)
-                bf = new BlurEffect();
+            Tree.Clear();
 
-            bf.Radius = 10;
-            mainWindow.Effect = bf;
             using (LoadingMainWindow lw = new LoadingMainWindow(TreeViewBuild_DoWork, "Загрузка дерева элементов проекта"))
             {
-
                 lw.Owner = mainWindow;
                 lw.ShowDialog();
-
             }
-            bf.Radius = 0;
-            mainWindow.Effect = bf;
+
 
             //if (_bgWorkerTreeViewBuild != null) { return; }
 
@@ -531,44 +525,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
             //_bgWorkerTreeViewBuild.RunWorkerAsync();
         }
 
-        // Данный метод работает в отдельном потоке.
-        void bgWorkerTreeViewBuild_DoWork(/*object sender, DoWorkEventArgs e*/)
-        {
-
-            //VisibilityLoading = "Visible";
-
-            //// Отмена выполнения фоновой задачи, сработает при вызове CancelAsync
-            //if (_bgWorkerTreeViewBuild.CancellationPending)
-            //{
-            //    Console.WriteLine("Отмена выполнения фоновой задачи, сработает при вызове CancelAsync");
-            //    e.Cancel = true; // значение нужно установить для того что бы при событии RunWorkerCompleted определить почему оно было вызвано, из-за того что закончилась операция или из-за отмены.
-            //    ShowInfo("Загрузка", "Отмена выполнения фоновой операции.");
-            //    return; // Отмена выполнения фоновой операции.
-            //}
-
-            //if (e.Cancel)
-            //{
-            //    Console.WriteLine("e.Cancel");
-            //}
-
-            _dispatcher.Invoke(new Action(() =>
-            {
-                Tree.Clear();
-            }));
-
-
-            // Console.WriteLine("Стартовый объект РП {0} - {1}. Стартовый объект детализации {2} - {3}", startRefObject, startRefObject.SystemFields.Id, StartObjectDetail, StartObjectDetail.SystemFields.Id);
-
-            TreeViewModel = new TreeViewModel(StartObjectDetail, null, startRefObject/*, this*/);
-
-            _dispatcher.Invoke(new Action(() =>
-            {
-                Tree.Add(TreeViewModel);
-            }));
-
-        }
-
-        void TreeViewBuild_DoWork()
+        void TreeViewBuild_DoWork(/*object sender, DoWorkEventArgs e*/)
         {
             //VisibilityLoading = "Visible";
 
@@ -586,10 +543,8 @@ namespace Wpf_SyncCompositionPE.ViewModel
             //    Console.WriteLine("e.Cancel");
             //}
 
-            _dispatcher.Invoke(new Action(() =>
-            {
-                Tree.Clear();
-            }));
+            if (_dispatcher == null)
+                _dispatcher = Dispatcher.CurrentDispatcher;
 
             TreeViewModel = new TreeViewModel(StartObjectDetail, null, startRefObject/*, this*/);
 
@@ -597,7 +552,6 @@ namespace Wpf_SyncCompositionPE.ViewModel
             {
                 Tree.Add(TreeViewModel);
             }));
-
         }
 
         //// Метод, который сработает в момент завершения BackgroundWorker
@@ -640,6 +594,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         #region Синхронизировать
 
         RelayCommand _syncCommand;
+
         /// <summary>
         /// Команда кнопки Синхронизировать
         /// </summary>
@@ -658,34 +613,67 @@ namespace Wpf_SyncCompositionPE.ViewModel
         // этого потока вызвать событие DoWork;
         //static private BackgroundWorker _bgWorkerSynchronizingСomposition = null;
 
+
+        void Sync()
+        {
+            using (LoadingMainWindow lw = new LoadingMainWindow(bgWorkerSynchronizingСomposition_DoWork, "Синхронизация состава работ"))
+            {
+                lw.Owner = mainWindow;
+                lw.ShowDialog();
+            }
+        }
+
+        void bgWorkerSynchronizingСomposition_DoWork(/*object sender, DoWorkEventArgs e*/)
+        {
+
+            //VisibilityLoading = "Visible";
+
+            //// Отмена выполнения фоновой задачи, сработает при вызове CancelAsync
+            //if (_bgWorkerSynchronizingСomposition.CancellationPending)
+            //{
+            //    Console.WriteLine("Отмена выполнения фоновой задачи, сработает при вызове CancelAsync");
+            //    e.Cancel = true; // значение нужно установить для того что бы при событии RunWorkerCompleted определить почему оно было вызвано, из-за того что закончилась операция или из-за отмены.
+            //    ShowInfo("Загрузка", "Отмена выполнения фоновой операции.");
+            //    return; // Отмена выполнения фоновой операции.
+            //}
+
+            //if (e.Cancel)
+            //{
+            //    Console.WriteLine("e.Cancel");
+            //}
+
+            //int amountAddObjects = 0;
+
+            SynchronizingСomposition(TreeViewModel, IsCopyRes: IsSyncRes, IsCopyOnlyPlan: IsSyncOnlyPlanRes/*, ref amountAddObjects*//*, this*/);
+
+            //ShowInfo("Синхронизация завершена", string.Format("Добавлено {0} элемента(ов) проекта", amountAddObjects));
+        }
+
+
+        delegate void StarterWorkLoading();
+
+        void StartWorkLoading(StarterWorkLoading starterWorkLoading)
+        {
+            if (bf == null)
+                bf = new BlurEffect();
+
+            bf.Radius = 10;
+            mainWindow.Effect = bf;
+
+            starterWorkLoading();
+
+            bf.Radius = 0;
+            mainWindow.Effect = bf;
+        }
+
         /// <summary>
         /// Действие по нажатию кнопки
         /// </summary>
         /// <param name="parameter"></param>
         public void ExecuteSyncCommand(object parameter)
         {
-
-            if (bf == null)
-                bf = new BlurEffect();
-
-            bf.Radius = 10;
-            mainWindow.Effect = bf;
-            using (LoadingMainWindow lw = new LoadingMainWindow(bgWorkerSynchronizingСomposition_DoWork, "Синхронизация состава работ"))
-            {
-
-                lw.Owner = mainWindow;
-                lw.ShowDialog();
-
-            }
-            using (LoadingMainWindow lw = new LoadingMainWindow(bgWorkerTreeViewBuild_DoWork, "Загрузка дерева элементов проекта"))
-            {
-
-                lw.Owner = mainWindow;
-                lw.ShowDialog();
-
-            }
-            bf.Radius = 0;
-            mainWindow.Effect = bf;
+            StartWorkLoading(Sync);
+            StartWorkLoading(TreeBuild);
 
             //if (_bgWorkerSynchronizingСomposition != null) { return; }
 
@@ -711,32 +699,6 @@ namespace Wpf_SyncCompositionPE.ViewModel
         }
 
         // Данный метод работает в отдельном потоке.
-        void bgWorkerSynchronizingСomposition_DoWork(/*object sender, DoWorkEventArgs e*/)
-        {
-
-            //VisibilityLoading = "Visible";
-
-            //// Отмена выполнения фоновой задачи, сработает при вызове CancelAsync
-            //if (_bgWorkerSynchronizingСomposition.CancellationPending)
-            //{
-            //    Console.WriteLine("Отмена выполнения фоновой задачи, сработает при вызове CancelAsync");
-            //    e.Cancel = true; // значение нужно установить для того что бы при событии RunWorkerCompleted определить почему оно было вызвано, из-за того что закончилась операция или из-за отмены.
-            //    ShowInfo("Загрузка", "Отмена выполнения фоновой операции.");
-            //    return; // Отмена выполнения фоновой операции.
-            //}
-
-            //if (e.Cancel)
-            //{
-            //    Console.WriteLine("e.Cancel");
-            //}
-
-            //int amountAddObjects = 0;
-
-            Synchronization.SynchronizingСomposition(TreeViewModel, IsCopyRes: IsSyncRes, IsCopyOnlyPlan : IsSyncOnlyPlanRes/*, ref amountAddObjects*//*, this*/);
-
-            //ShowInfo("Синхронизация завершена", string.Format("Добавлено {0} элемента(ов) проекта", amountAddObjects));
-        }
-
 
         // Метод, который сработает в момент завершения BackgroundWorker
         private void bgWorkerSynchComposition_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -765,7 +727,6 @@ namespace Wpf_SyncCompositionPE.ViewModel
             return true;
         }
 
-
         #endregion
 
         #endregion
@@ -778,6 +739,88 @@ namespace Wpf_SyncCompositionPE.ViewModel
                 list = null;
             }
         }
+
+
+        public void SynchronizingСomposition(TreeViewModel treeViewModel, bool IsCopyRes, bool IsCopyOnlyPlan/*, ref int amountAddObjects*//*, MainWindowViewModel mainWindowViewModel = null*/)
+        {
+            //if (MainWindowViewModel == null)
+            //    MainWindowViewModel = mainWindowViewModel;
+
+            ReferenceObject Parent = treeViewModel.PEForSync;
+
+            if (Parent != null)
+                Parent = syncComposition(treeViewModel, IsCopyRes: IsCopyRes, IsCopyOnlyPlan: IsCopyOnlyPlan/*, ref amountAddObjects*/);
+
+            foreach (TreeViewModel treeViewModelItem in treeViewModel.Children)
+            {
+                if (Parent != null && treeViewModelItem.PEForSync == null)
+                {
+                    treeViewModelItem.PEForSync = Parent;
+                }
+                SynchronizingСomposition(treeViewModelItem, IsCopyRes: IsCopyRes, IsCopyOnlyPlan: IsCopyOnlyPlan/*, ref amountAddObjects*/);
+            }
+        }
+
+        private ReferenceObject syncComposition(TreeViewModel pe_treeItem, bool IsCopyRes, bool IsCopyOnlyPlan/*, ref int amountAddObjects*/)
+        {
+
+            #region
+            //Объект   для синхронизации 
+            if (pe_treeItem.IsObjectToSync/* && (bool)pe_treeItem.IsSelectObjToSynch*/)
+            {
+                /* Если синхронизация отсутствует, то создаём новую работу в плане РП 
+                   в синхронизированной с Текущей и устанавливаем синхронизацию с дочерней из плана детализации.
+               */
+
+                ClassObject TypePE = pe_treeItem.ProjectElement.Class;
+
+                List<Guid> GuidsLinks = new List<Guid>() { new Guid("063df6fa-3889-4300-8c7a-3ce8408a931a"),
+                new Guid("68989495-719e-4bf3-ba7c-d244194890d5"), new Guid("751e602a-3542-4482-af40-ad78f90557ad"),
+                new Guid("df3401e2-7dc6-4541-8033-0188a8c4d4bf"),new Guid("58d2e256-5902-4ed4-a594-cf2ba7bd4770")
+                ,new Guid("0e1f8984-5ebe-4779-a9cd-55aa9c984745") ,new Guid("79b01004-3c10-465a-a6fb-fe2aa95ae5b8")
+                ,new Guid("339ffc33-55b2-490f-b608-a910c1f59f51")};
+
+                //Console.WriteLine(pe_treeItem.ReferenceObject + " " + pe_treeItem.PEForSync);
+                //Console.WriteLine("Что копируем {0}, Тип нового объекта {1}, где создаем {2}", pe_treeItem.ReferenceObject, TypePE, pe_treeItem.PEForSync);
+
+                //pe_treeItem.ProjectElement.Refresh(pe_treeItem.ProjectElement);
+
+                //var newPE = new ProjectManagementWork(pe_treeItem.ReferenceObject.CreateCopy(TypePE, pe_treeItem.PEForSync, GuidsLinks, false));
+                var newPE = ProjectManagementWork.CopyPE(pe_treeItem.ProjectElement, pe_treeItem.PEForSync, GuidsLinks);
+
+                if (newPE != null)
+                {
+
+                    //amountAddObjects++;
+
+                    ProjectManagementWork.RecalcResourcesWorkLoad(newPE);
+                    //Console.WriteLine("Синхронизирование элемент {0} в укрупнении {1}", pe_treeItem.Name, pe_treeItem.PEForSync.ToString());
+                    /*   newPE.ReferenceObject.EndChanges()*/
+                    ;
+                    //amountCreate++;
+
+                    // text = string.Format("Добавление элемента проекта {0}", newPE.ToString());
+                    // WaitingHelper.SetText(text);
+
+                    if (IsCopyRes)
+                    {
+                        ProjectManagementWork.СкопироватьИспользуемыеРесурсы_изЭлементаПроекта_вЭлементПроекта
+    (newPE, pe_treeItem.ProjectElement, onlyPlanningRes: IsCopyOnlyPlan, PlanningSpaceForNewRes_Guid: ProjectManagementWork.GetProject(newPE)[ProjectManagementWork.PM_param_PlanningSpace_GUID].GetGuid());
+                    }
+
+                    Synchronization.SyncronizeWorks(newPE, pe_treeItem.ProjectElement);
+
+                    //pe_treeItem.IsSelectObjToSynch = false;
+                    //pe_treeItem.IsObjectToSync = false;
+
+                    return newPE;
+                }
+            }
+            #endregion
+            return null;
+        }
+
+
 
         ///// <summary>
         ///// Очистка коллекции

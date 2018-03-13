@@ -42,7 +42,7 @@
                 <!--UniformGrid - Предоставляет способ размещения элементов в сетки, 
     при котором все ячейки имеют одинаковый размер.-->
                 <UniformGrid Grid.Row="1" Grid.ColumnSpan="2" Rows="1" Columns="2">
-                    <CheckBox Grid.Column="0"  Command="{Binding SyncResCommand, UpdateSourceTrigger=PropertyChanged}" IsChecked="False"   Margin="20 0 10 0" x:Name="checkBoxSynsRes" Content="Синхронизировать ресурсы"/>
+                    <CheckBox Grid.Column="0"  Command="{Binding SyncResCommand, UpdateSourceTrigger=PropertyChanged}" IsChecked="False"   Margin="20 0 10 0" x:Name="checkBoxSynsRes" Content="Синхронизировать ресурсы :"/>
                     <CheckBox Grid.Column="1"  Command="{Binding SyncOnlyPlanResCommand, UpdateSourceTrigger=PropertyChanged}" IsChecked="True"  Margin="20 0 10 0" x:Name="checkBoxOnlyPlan" Content="Только плановые ресурсы"/>
                 </UniformGrid>
 
@@ -51,21 +51,16 @@
 
                 <TabControl Grid.Row="3"  Grid.ColumnSpan="2" >
                     <TabItem Header="Настройка синхронизации">
-                        <tree:TreeViewUserControl></tree:TreeViewUserControl>
+                        <tree:TreeViewUserControl Margin="0 0 0 60"></tree:TreeViewUserControl>
                     </TabItem>
                 </TabControl>
 
 
                 <UniformGrid Grid.Row="4" Grid.ColumnSpan="2" Rows="1" Columns="2" >
                     <Button  Grid.Row="4" Grid.Column="0"  Margin="10 5 10 8" VerticalAlignment="Center" Content="Синхронизировать" Command="{Binding SyncCommand}"/>
-                    <Button  Grid.Row="4" Grid.Column="1"  Margin="10 5 10 8"  VerticalAlignment="Center" Content="Отмена" Command="{Binding CloseCommand}"/>
+                    <Button  Grid.Row="4" Grid.Column="1"  Margin="10 5 10 8"  VerticalAlignment="Center" Content="Закрыть" Command="{Binding CloseCommand}"/>
                 </UniformGrid>
-
-
             </Grid>
         </ContentControl>
-
-            <ContentControl  Name="childWindow" Visibility="{Binding WindowVisibility}" Content="{Binding XmlContent}" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"></ContentControl>
-  
     </Grid>
 </Window>

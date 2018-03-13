@@ -9,9 +9,7 @@ namespace LoadingWindow
     /// </summary>
     public partial class LoadingMainWindow : Window, IDisposable
     {
-
-
-        public MainViewModel mainViewModel { get; set; }
+        public MainViewModel LoadingViewModel { get; set; }
         /// <summary>
         /// Initializes a new instance of the LoadingWindow class.
         /// </summary>
@@ -19,14 +17,13 @@ namespace LoadingWindow
         {
             InitializeComponent();
 
-            mainViewModel = new MainViewModel(worker, nameProcess);
+            LoadingViewModel = new MainViewModel(worker, nameProcess);
 
-            this.DataContext = mainViewModel;
+            this.DataContext = LoadingViewModel;
 
-            if (mainViewModel.CloseAction == null)
-                mainViewModel.CloseAction = new Action(() => this.Close());
+            if (LoadingViewModel.CloseAction == null)
+                LoadingViewModel.CloseAction = new Action(() => this.Close());
         }
-
 
         public void Dispose()
         {
@@ -39,7 +36,7 @@ namespace LoadingWindow
             if (disposing)
             {
                 // free managed resources
-                mainViewModel = null;
+                LoadingViewModel = null;
             }
             // free native resources if there are any.
         }

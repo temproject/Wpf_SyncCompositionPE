@@ -33,6 +33,7 @@ namespace Wpf_SyncCompositionPE
             if (viewModel.CloseAction == null)
                 viewModel.CloseAction = new Action(() => this.Close());
         }
-        
+
+
     }
 }

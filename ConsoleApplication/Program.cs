@@ -23,7 +23,7 @@ namespace ConsoleApplication
       
 
             //MacroContext mc = new MacroContext(sc);
-            ReferenceObject ro = ReferenceCatalog.FindReference(PM_ref_Guid).CreateReference().Find(633746);
+            ReferenceObject ro = ReferenceCatalog.FindReference(PM_ref_Guid).CreateReference().Find(655268);
 
   
             MainWindow window = new MainWindow(ro);

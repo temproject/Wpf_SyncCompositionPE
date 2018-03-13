@@ -239,17 +239,17 @@ namespace Wpf_SyncCompositionPE.Model
             return GetDependenciesObjects(returnOnlyMasterWorks, work.SystemFields.Guid.ToString());
         }
 
-        static MainWindowViewModel MainWindowViewModel = null;
+        //static MainWindowViewModel MainWindowViewModel = null;
 
-        public static void SynchronizingСomposition(TreeViewModel treeViewModel, bool IsCopyRes, bool IsCopyOnlyPlan/*, ref int amountAddObjects*/, MainWindowViewModel mainWindowViewModel = null)
+        public static void SynchronizingСomposition(TreeViewModel treeViewModel, bool IsCopyRes, bool IsCopyOnlyPlan/*, ref int amountAddObjects*//*, MainWindowViewModel mainWindowViewModel = null*/)
         {
-            if (MainWindowViewModel == null)
-                MainWindowViewModel = mainWindowViewModel;
+            //if (MainWindowViewModel == null)
+            //    MainWindowViewModel = mainWindowViewModel;
 
             ReferenceObject Parent = treeViewModel.PEForSync;
 
             if (Parent != null)
-                Parent = syncComposition(treeViewModel, IsCopyRes, IsCopyOnlyPlan/*, ref amountAddObjects*/);
+                Parent = syncComposition(treeViewModel, IsCopyRes : IsCopyRes, IsCopyOnlyPlan : IsCopyOnlyPlan/*, ref amountAddObjects*/);
 
             foreach (TreeViewModel treeViewModelItem in treeViewModel.Children)
             {
@@ -257,7 +257,7 @@ namespace Wpf_SyncCompositionPE.Model
                 {
                     treeViewModelItem.PEForSync = Parent;
                 }
-                SynchronizingСomposition(treeViewModelItem, IsCopyRes, IsCopyOnlyPlan/*, ref amountAddObjects*/);
+                SynchronizingСomposition(treeViewModelItem, IsCopyRes: IsCopyRes, IsCopyOnlyPlan: IsCopyOnlyPlan/*, ref amountAddObjects*/);
             }
         }
 
@@ -304,7 +304,7 @@ namespace Wpf_SyncCompositionPE.Model
                     if (IsCopyRes)
                     {
                         ProjectManagementWork.СкопироватьИспользуемыеРесурсы_изЭлементаПроекта_вЭлементПроекта
-    (newPE, pe_treeItem.ProjectElement, ProjectManagementWork.GetProject(newPE)[ProjectManagementWork.PM_param_PlanningSpace_GUID].GetGuid(), onlyPlanningRes: IsCopyOnlyPlan);
+    (newPE, pe_treeItem.ProjectElement, onlyPlanningRes: IsCopyOnlyPlan, PlanningSpaceForNewRes_Guid: ProjectManagementWork.GetProject(newPE)[ProjectManagementWork.PM_param_PlanningSpace_GUID].GetGuid());
                     }
 
                     SyncronizeWorks(newPE, pe_treeItem.ProjectElement);

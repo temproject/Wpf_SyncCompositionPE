@@ -334,24 +334,34 @@ namespace Wpf_SyncCompositionPE.Model
             List<ReferenceObject> resources = ro.GetObjects(ProjectManagementWork.PM_link_UsedResources_GUID)
                 .Where(res => (res.Class == References.Class_NonConsumableResources)).ToList();
 
-            List<UsedResource> PlannedNonConsumableResources = new List<UsedResource>();
+            List<UsedResource> NonConsumableResources = new List<UsedResource>();
 
-            foreach (var item in resources)
+            //Console.WriteLine("IsOnlyPlanned " + IsOnlyPlanned);
+
+            foreach (var res in resources)
             {
-      
-                UsedResource usedResource = new UsedResource(item);
-   
+                UsedResource usedResource = new UsedResource(res);
+
 
                 if (IsOnlyPlanned)
                 {
                     if (usedResource.IsPlanned)
-                        PlannedNonConsumableResources.Add(usedResource);
+                    {
+                        //Console.WriteLine("IsOnlyPlanned " + IsOnlyPlanned + " usedResource.IsPlanned true" );
+                        NonConsumableResources.Add(usedResource);
+                    }
+                        
                 }
+
                 else
-                    PlannedNonConsumableResources.Add(usedResource);
+                {
+                    //Console.WriteLine("IsOnlyPlanned  false");
+                    NonConsumableResources.Add(usedResource);
+                }
+
             }
 
-            return PlannedNonConsumableResources;
+            return NonConsumableResources;
 
         }
 
@@ -774,7 +784,7 @@ namespace Wpf_SyncCompositionPE.Model
         /// <param name="PlanningSpaceForCheck_Guid">Копировать ресурсы только из этого пространства планирования</param>
         /// <returns></returns>
         public static bool СкопироватьИспользуемыеРесурсы_изЭлементаПроекта_вЭлементПроекта(ReferenceObject owner, ReferenceObject whence
-              , Guid? PlanningSpaceForNewRes_Guid = null, Guid? PlanningSpaceForCheck_Guid = null, bool onlyPlanningRes = false)
+             , bool onlyPlanningRes, Guid? PlanningSpaceForNewRes_Guid = null, Guid? PlanningSpaceForCheck_Guid = null)
         {
 
             if (owner == null || whence == null) return false;
@@ -789,8 +799,6 @@ namespace Wpf_SyncCompositionPE.Model
                     {
                         return false;
                     }
-
-
 
 
                     ReferenceObject NonExpendableResource = null;

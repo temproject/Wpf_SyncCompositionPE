@@ -15,27 +15,27 @@
                 </TreeView:TreeViewCustom.ItemTemplate>
                 <TreeView:TreeViewCustom.Columns>
                     <!-- Создайте первый столбец, содержащий кнопку expand и имя типа .-->
-                    <GridViewColumn Header="Наименование" Width="auto">
+                    <GridViewColumn Header="Наименование" Width="Auto" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <!--Кнопка Expander -->
                                     <TreeView:TreeViewCustomExpander/>
-                                    <CheckBox IsChecked="{Binding IsObjectToSync}"  Visibility="{Binding Visibility}"/>
+                                    <CheckBox IsChecked="{Binding IsObjectToSync}"  Visibility="{Binding Visibility}" VerticalAlignment="Center"/>
                                     <Image Width="16" Height="16" Margin="3,0" Source="{Binding PathIcon}" />
                                     <!--Отобразить имя-->
-                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Width="300"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <!-- Создайте первый столбец, содержащий кнопку expand и имя типа .-->
-                    <GridViewColumn Header="Номер" Width="auto">
+                    <GridViewColumn Header="Номер" Width="Auto"  >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <!--Отобразить имя-->
-                                    <TextBlock Text="{Binding Number}"/>
+                                    <TextBlock Text="{Binding Number}" Width="auto"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

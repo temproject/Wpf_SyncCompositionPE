@@ -312,7 +312,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         {
             if (!IsSyncRes || IsListNullOrEmpty(_detailingProjects))
             {
-                IsSyncOnlyPlanRes = false;
+                //IsSyncOnlyPlanRes = false;
                 return false;
             }
             else
@@ -732,7 +732,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
             //int amountAddObjects = 0;
 
-            Synchronization.SynchronizingСomposition(TreeViewModel, IsSyncRes, IsSyncOnlyPlanRes/*, ref amountAddObjects*/, this);
+            Synchronization.SynchronizingСomposition(TreeViewModel, IsCopyRes: IsSyncRes, IsCopyOnlyPlan : IsSyncOnlyPlanRes/*, ref amountAddObjects*//*, this*/);
 
             //ShowInfo("Синхронизация завершена", string.Format("Добавлено {0} элемента(ов) проекта", amountAddObjects));
         }

@@ -26,7 +26,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
             this.startRefObject = startRefObject;
 
             if (IsListNullOrEmpty(DetailingProjects))
-                ShowError("Синхронизация состава работа", "Ошибка, выбранная детализация не найдена!");
+                ShowError("Синхронизация состава работа", "Ошибка, выбранный элемент проекта не имеет детализаций!");
 
             if (mainWindow == null)
                 mainWindow = mw;

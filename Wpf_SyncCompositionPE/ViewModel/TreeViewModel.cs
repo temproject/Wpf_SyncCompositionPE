@@ -413,7 +413,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
                 if (string.IsNullOrEmpty(_name))
                 {
                     if (this.ProjectElement != null)
-                        _name = "  "+this.ProjectElement[ProjectManagementWork.PM_param_Name_GUID].GetString();
+                        _name = this.ProjectElement[ProjectManagementWork.PM_param_Name_GUID].GetString();
                     else _name = "null";
                 }
 

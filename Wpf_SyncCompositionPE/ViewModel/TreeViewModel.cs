@@ -269,7 +269,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         }
 
         private string visibilityCheckBox = "Collapsed";
-
+         
         /// <summary>
         /// Флаг отвечающий за отображение чекбокса в дереве
         /// </summary>

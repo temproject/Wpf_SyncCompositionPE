@@ -281,7 +281,8 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
                 if (ShowCheckBox == true)//нужно отобразить - показываем 
                     visibilityCheckBox = "Visible";
-                
+                //else if (this.HasChildren)
+                //    visibilityCheckBox = "Collapsed";
                 else 
                     visibilityCheckBox = "Collapsed";
 

@@ -5,7 +5,7 @@
         xmlns:local="clr-namespace:Wpf_SyncCompositionPE.ViewModel"
         xmlns:tree="clr-namespace:Wpf_SyncCompositionPE"
         WindowStartupLocation="CenterScreen"
-        Title="Синхронизация состава работ" SizeToContent="WidthAndHeight" Width="auto" MinHeight="280" MinWidth="400">
+        Title="Синхронизация состава работ" SizeToContent="WidthAndHeight" Width="auto" Height="auto" MinHeight="280" MinWidth="400">
     <Grid>
         <ContentControl>
             <Grid>

@@ -166,6 +166,17 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         #endregion // IsSelected
 
+        #region IsItemForSynh
+
+
+        public bool IsItemForSynh
+        {
+         
+            get {  return _treeViewModel.IsObjectToSync; }
+        }
+
+        #endregion // IsItemForSynh
+
         #region LoadChildren
 
         /// <summary>

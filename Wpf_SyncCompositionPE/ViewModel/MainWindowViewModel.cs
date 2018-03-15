@@ -503,8 +503,8 @@ namespace Wpf_SyncCompositionPE.ViewModel
             {
                 lw.Owner = mainWindow;
                 lw.ShowDialog();
-            }
 
+            }
 
             //if (_bgWorkerTreeViewBuild != null) { return; }
 
@@ -552,6 +552,8 @@ namespace Wpf_SyncCompositionPE.ViewModel
             {
                 Tree.Add(TreeViewModel);
             }));
+
+            System.Threading.Thread.Sleep(3500);
         }
 
         //// Метод, который сработает в момент завершения BackgroundWorker

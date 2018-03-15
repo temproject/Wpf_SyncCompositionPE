@@ -5,8 +5,10 @@
         xmlns:local="clr-namespace:Wpf_SyncCompositionPE.ViewModel"
         xmlns:tree="clr-namespace:Wpf_SyncCompositionPE"
         WindowStartupLocation="CenterScreen"
-        Title="Синхронизация состава работ" SizeToContent="WidthAndHeight" Width="auto" Height="auto" MinHeight="280" MinWidth="400">
+        Title="Синхронизация состава работ"  Height="500" Width="650">
     <Grid>
+        <!--MaxHeight="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenHeightKey}}" 
+        MaxWidth="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenWidthKey}}"-->
         <ContentControl>
             <Grid>
                 <Grid.RowDefinitions>
@@ -51,7 +53,7 @@
 
                 <TabControl Grid.Row="3"  Grid.ColumnSpan="2" >
                     <TabItem Header="Настройка синхронизации">
-                        <tree:TreeViewUserControl Margin="0 0 0 60"></tree:TreeViewUserControl>
+                        <tree:TreeViewUserControl></tree:TreeViewUserControl>
                     </TabItem>
                 </TabControl>
 

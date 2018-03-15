@@ -24,8 +24,7 @@
                                     <Image Width="16" Height="16" Margin="3,0" Source="{Binding PathIcon}" />
                                     <CheckBox IsChecked="{Binding IsObjectToSync}"  Visibility="{Binding VisibilityCheckBox}" VerticalAlignment="Center"/>
                                     <!--Отобразить имя-->
-                                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Width="300"/>
-
+                                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Width="200"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
@@ -36,7 +35,7 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <!--Отобразить имя-->
-                                    <TextBlock Text="{Binding Number}" TextWrapping="Wrap" Width="100"/>
+                                    <TextBlock Text="{Binding Number}" Width="Auto"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

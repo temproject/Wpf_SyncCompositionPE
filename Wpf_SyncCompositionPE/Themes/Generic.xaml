@@ -4,21 +4,31 @@
     xmlns:local="clr-namespace:Wpf_SyncCompositionPE"
     xmlns:TreeView="clr-namespace:Wpf_SyncCompositionPE.Model">
 
+    <!-- Ключевые свойства стиля: 
+	o Setters – коллекция объектов, которые автоматически устанавливают значение свойств элементов управления. 
+	o Triggers – коллекция объектов, которые позволяют автоматически изменять параметры стиля. 
+	o BasedOn – для создания стиля, который наследует другой стиль и переопределят его значения. 
+	o TargetType – указывает тип элементов на которые действует стиль.  
+
+  Триггеры – декларативный подход к отслеживанию изменения по определенному условию и применения соответствующего стиля. 
+    
+  ******* Основные типы триггеров: 
+	o Trigger – Самый простой триггер. Следит за изменением значения свойства. 
+	o MultiTrigger – Похож на первый но срабатывает при выполнении множества условий. 
+	o DataTriger – Срабатывает при изменении в связанных с ним данных. 
+	o MultiDataTrigger – множество триггеров данных. 
+	o EventTrigger – При возникновении события он применяет соответствующую анимацию.  -->
+
     <!-- Шаблон отображения(юзер интерфейс) -->
     <!--Конвертер для отступов предметов-->
     <TreeView:TreeViewCustomConverter x:Key="TreeViewCustomConverter"/>
 
-    <Style TargetType="{x:Type TreeViewItem}">
-        <!--<Setter Property="HorizontalContentAlignment" Value="Stretch" />-->
+    <!--<Style TargetType="{x:Type TreeViewItem}">
+        --><!--<Setter Property="HorizontalContentAlignment" Value="Stretch" />--><!--
         <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
         <Setter Property="FontWeight" Value="Normal" />
-        <Style.Triggers>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="FontWeight" Value="Bold" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+    </Style>-->
 
     <!-- стиль кнопки ToggleButton -->
     <Style x:Key="ExpandCollapseToggleStyle"
@@ -75,7 +85,7 @@
                         Value="M 0 2 L 0 3 L 5 3 L 5 2 Z"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
-                    
+
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -97,19 +107,25 @@
             <ItemsPresenter x:Name="ItemsPresenter" Visibility="Collapsed" />
         </StackPanel>
         <ControlTemplate.Triggers>
+            <!--Если значение свойства ShortName объекта с этим стилем будет равно USA - текст станет красного цвета-->
+            <DataTrigger Binding="{Binding Path=IsItemForSynh}" Value="true">
+                <!--<Setter TargetName="Border" Property="Background"
+                    Value="#7777C5"/>-->
+                <Setter Property="Foreground" 
+                    Value="Red"/>
+            </DataTrigger>
             <!--Триггер, используемый для отображения подпунктов-->
             <Trigger Property="IsExpanded" Value="True">
                 <Setter TargetName="ItemsPresenter" Property="Visibility" Value="Visible"/>
             </Trigger>
             <!--Триггер, используемый для изменения цвета на основе выбора-->
             <Trigger Property="IsSelected" Value="true">
-
                 <!-- Изменить цвет фона-->
                 <Setter TargetName="Border" Property="Background"
-                    Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                    Value="#DBE3FF"/>
                 <!--Изменение цвета переднего плана-->
-                <Setter Property="Foreground" 
-                    Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                <!--<Setter Property="Foreground" 
+                    Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>-->
             </Trigger>
             <!--Триггер, используемый для изменения цвета на основе выбора-->
             <MultiTrigger>
@@ -166,11 +182,6 @@
                             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                             <Setter Property="FontWeight" Value="Normal" />
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="FontWeight" Value="Bold" />
-                                </Trigger>
-                            </Style.Triggers>
                         </Style>
                         <!--стиль ко всем «TreeViewCustomExpander».-->
                         <Style TargetType="TreeView:TreeViewCustomExpander">
@@ -183,7 +194,7 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
                         <!--ScrollViewer, обеспечивающий горизонтальную прокрутку
-                         как для контента, так и для заголовков-->
+                         как для контента, так и для заголовков-->
                         <ScrollViewer HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Disabled">
                             <!--Сетка, содержащая строку заголовка и все строки содержимого.-->
@@ -198,7 +209,7 @@
                                 <GridViewHeaderRowPresenter Columns="{TemplateBinding Columns}"
                                     AllowsColumnReorder="{TemplateBinding AllowsColumnReorder}"/>
                                 <!--ScrollViewer обеспечивает вертикальную прокрутку
-                                 функциональность для контента.-->
+                                 функциональность для контента.-->
                                 <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                                               VerticalScrollBarVisibility="Auto"
                                               Grid.Row="1">

@@ -123,7 +123,10 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
                 selectedDetailingProject_refObj = selectedDetailingProject as ReferenceObject;
 
+
                 Tree = null;
+
+                StartWorkLoading(TreeBuild);
 
                 RaisePropertyChanged("SelectedDetailingProject");
             }
@@ -372,12 +375,12 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         #endregion
 
-        #region кнопка Загрузить
+        #region кнопка Обновить
 
         RelayCommand _buildTreeCommand;
 
         /// <summary>
-        /// команда кнопки "Загрузить"
+        /// команда кнопки "Обновить"
         /// </summary>
         public ICommand BuildTreeCommand
         {
@@ -392,7 +395,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         TreeViewModel TreeViewModel = null;
 
         /// <summary>
-        /// Действие кнопки "Загрузить"
+        /// Действие кнопки "Обновить"
         /// </summary>
         /// <param name="parameter"></param>
         public void ExecuteBuildTreeCommand(object parameter)

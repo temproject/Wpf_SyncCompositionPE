@@ -1,5 +1,7 @@
 ﻿#define TF_TEST
 
+using LoadingWindow;
+using LoadingWindow.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +10,9 @@ using System.Threading.Tasks;
 using TFlex.DOCs.Model;
 using TFlex.DOCs.Model.References;
 using Wpf_SyncCompositionPE;
-
+using Wpf_SyncCompositionPE.Model;
+using Wpf_SyncCompositionPE.ViewModel;
+using System.Windows;
 namespace ConsoleApplication
 {
 
@@ -20,15 +24,28 @@ namespace ConsoleApplication
             ServerConnection sc = ConnectToDocs();
 
             Guid PM_ref_Guid = new Guid("86ef25d4-f431-4607-be15-f52b551022ff");
-      
+
 
             //MacroContext mc = new MacroContext(sc);
+
+
             ReferenceObject ro = ReferenceCatalog.FindReference(PM_ref_Guid).CreateReference().Find(231204);
 
-  
-            MainWindow window = new MainWindow(ro);
+            Wpf_SyncCompositionPE.Model.SyncCompositionPE syncCompositionPE = new Wpf_SyncCompositionPE.Model.SyncCompositionPE();
 
-            window.ShowDialog();
+            syncCompositionPE.StartRefObject = ro;
+
+            if (HelperMethod.IsListNullOrEmpty(syncCompositionPE.DetailingProjects))
+            {
+                DisplayMessage.ShowError("Синхронизация состава работа", "Ошибка, выбранный элемент проекта не имеет детализаций!");
+                return;
+            }
+
+            var view = new MainWindow();
+
+            view.viewModel.syncCompositionPE = syncCompositionPE;
+
+            view.ShowDialog();
 
             //dynamic macro = new Cancelaria.Macro(mc);
             //macro.Test();
@@ -36,7 +53,7 @@ namespace ConsoleApplication
             //var project = References.ProjectManagementReference.Find(346161); //План ОПК
             //var dialog = new Report.Views.Report_View(project);
             //dialog.ShowDialog();
-            Console.ReadKey();   
+            Console.ReadKey();
         }
         static ServerConnection ConnectToDocs()
         {
@@ -69,5 +86,5 @@ namespace ConsoleApplication
         }
     }
 
-    
+
 }

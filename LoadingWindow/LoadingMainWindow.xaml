@@ -6,9 +6,12 @@
         xmlns:ignore="http://www.galasoft.ch/ignore"
         mc:Ignorable="d ignore"
         xmlns:local="clr-namespace:LoadingWindow"
+             xmlns:vm="clr-namespace:LoadingWindow.ViewModel"
         x:Name="_this" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" WindowStyle="None"
         Title="LoadingAnimation" SizeToContent="WidthAndHeight" Width="auto" Height="auto" Background="{x:Null}" AllowsTransparency="True">
-
+    <!--<Window.DataContext>
+        <vm:LoadWindowViewModel></vm:LoadWindowViewModel>
+    </Window.DataContext>-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="80"></RowDefinition>

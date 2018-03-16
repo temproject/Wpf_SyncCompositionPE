@@ -66,6 +66,7 @@ namespace Wpf_SyncCompositionPE.Model
         public TreeViewCustom()
         {
             Columns = new GridViewColumnCollection();
+        
         }
 
         #region Свойства
@@ -148,7 +149,6 @@ namespace Wpf_SyncCompositionPE.Model
                     //Проверьте, является ли текущий элемент TreeViewItem
                     if (typeof(TreeViewItem).IsAssignableFrom(Element.GetType()))
                     {
-
                         //Увеличить счетчик уровня
                         Level++;
 

@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using TFlex.DOCs.Model.References;
@@ -79,16 +80,19 @@ namespace Wpf_SyncCompositionPE.ViewModel
                 ContainsObjSync = false;
         }
 
+        //protected async override void LoadChildren()
+        //{
+        //    foreach (TreeViewModel space in await Task.Run(() => ProjectElement.Children)))
+        //        base.Childrens.Add(new SpaceObjectViewModel(space, this));
+        //}
+
         protected override void LoadChildren()
         {
             this.IsExpanded = (bool)this.IsSelectObjToSynch;
 
-            foreach (var child in ProjectElement.Children)
-            {
-                var d = new TreeViewModel(child, this);
+            foreach (var child in/* await Task.Run(() => */ProjectElement.Children)
+                base.Children.Add(new TreeViewModel(child, this));
 
-                base.Children.Add(d);
-            }
         }
 
         public override string ToString()
@@ -167,7 +171,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         {
             //если дочерний элементе детализации не синхронизирован укрупнением родительского элемента
             //то такой дочерний элемент доступен для синхронизации 
-            if ((MainWindowViewModel.IsListNullOrEmpty(Укрупнения) ||
+            if ((HelperMethod.IsListNullOrEmpty(Укрупнения) ||
               !Укрупнения.Any(pmw => ProjectManagementWork.GetProject(pmw) == ProjectStartSelectBiggerPE)))
             {
 
@@ -180,7 +184,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
                 List<ReferenceObject> УкрупненияДетализации = Synchronization.GetSynchronizedWorks(ProjectElement.Parent, true);
 
-                if (!MainWindowViewModel.IsListNullOrEmpty(УкрупненияДетализации))
+                if (!HelperMethod.IsListNullOrEmpty(УкрупненияДетализации))
                     PEForSync = УкрупненияДетализации.FirstOrDefault(pe => ProjectManagementWork.GetProject(pe) == ProjectStartSelectBiggerPE);
             }
             else
@@ -218,8 +222,6 @@ namespace Wpf_SyncCompositionPE.ViewModel
                         base.MarkAllParents(this.Parent as TreeViewModel);
                     }
                 }
-
-
                 RaisePropertyChanged("IsObjectToSync");
 
             }
@@ -245,7 +247,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
                 _isSelectObjToSynch = value;
 
-                RaisePropertyChanged("IsSelectObjToSynch");
+                RaisePropertyChanged(nameof(IsSelectObjToSynch));
             }
         }
 
@@ -264,12 +266,12 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
                 containsObjSync = value;
 
-                RaisePropertyChanged("ContainsObjSync");
+                RaisePropertyChanged(nameof(ContainsObjSync));
             }
         }
 
         private string visibilityCheckBox = "Collapsed";
-         
+
         /// <summary>
         /// Флаг отвечающий за отображение чекбокса в дереве
         /// </summary>
@@ -283,7 +285,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
                     visibilityCheckBox = "Visible";
                 //else if (this.HasChildren)
                 //    visibilityCheckBox = "Collapsed";
-                else 
+                else
                     visibilityCheckBox = "Collapsed";
 
                 return visibilityCheckBox;
@@ -291,7 +293,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
             //set
             //{
             //    visibilityCheckBox = value;
-            //    RaisePropertyChanged("VisibilityCheckBox");
+            //    RaisePropertyChanged(nameof(VisibilityCheckBox));
             //}
         }
 

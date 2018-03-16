@@ -7,15 +7,16 @@
              xmlns:data="clr-namespace:Wpf_SyncCompositionPE.ViewModel" x:Class="Wpf_SyncCompositionPE.TreeViewUserControl">
     <Grid>
         <DockPanel>
-            <TreeView:TreeViewCustom AllowsColumnReorder="True" ItemsSource="{Binding Tree}"   Visibility="{Binding VisibilityTree}">
+            <TreeView:TreeViewCustom AllowsColumnReorder="True" ItemsSource="{Binding Tree}"  >
                 <!-- Создание шаблона элемента, чтобы указать ItemsSource -->
                 <TreeView:TreeViewCustom.ItemTemplate >
-                    <HierarchicalDataTemplate  DataType="{x:Type data:TreeViewModel}" 
-          ItemsSource="{Binding Children}" />
+                    <!--<HierarchicalDataTemplate  DataType="{x:Type data:TreeViewModel}" 
+          ItemsSource="{Binding Children}" />-->
+                    <HierarchicalDataTemplate  ItemsSource="{Binding Children}" />
                 </TreeView:TreeViewCustom.ItemTemplate>
                 <TreeView:TreeViewCustom.Columns>
                     <!-- Создайте первый столбец, содержащий кнопку expand и имя типа .-->
-                    <GridViewColumn Header="Наименование" Width="Auto" >
+                    <GridViewColumn Header="Наименование" Width="400">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -24,13 +25,13 @@
                                     <Image Width="16" Height="16" Margin="3,0" Source="{Binding PathIcon}" />
                                     <CheckBox IsChecked="{Binding IsObjectToSync}"  Visibility="{Binding VisibilityCheckBox}" VerticalAlignment="Center"/>
                                     <!--Отобразить имя-->
-                                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Width="200"/>
+                                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Width="250"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <!-- Создайте первый столбец, содержащий кнопку expand и имя типа .-->
-                    <GridViewColumn Header="Номер" Width="Auto" >
+                    <GridViewColumn Header="Номер" Width="150" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">

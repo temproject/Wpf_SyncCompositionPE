@@ -103,7 +103,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
                 if (value != _isExpanded)
                 {
                     _isExpanded = value;
-                    this.RaisePropertyChanged("IsExpanded");
+                    this.RaisePropertyChanged(nameof(IsExpanded));
                 }
 
                 // Expand all the way up to the root.
@@ -159,7 +159,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
                 if (value != _isSelected)
                 {
                     _isSelected = value;
-                    this.RaisePropertyChanged("IsSelected");
+                    this.RaisePropertyChanged(nameof(IsSelected));
                 }
             }
         }

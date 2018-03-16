@@ -2,6 +2,7 @@
 using LoadingWindow.ViewModel;
 using System;
 
+
 namespace LoadingWindow
 {
     /// <summary>
@@ -9,27 +10,28 @@ namespace LoadingWindow
     /// </summary>
     public partial class LoadingMainWindow : Window, IDisposable
     {
-        public MainViewModel LoadingViewModel { get; set; }
+        public LoadWindowViewModel LoadingViewModel { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the LoadingWindow class.
         /// </summary>
-        public LoadingMainWindow(Action worker, string nameProcess)
+        public LoadingMainWindow()
         {
             InitializeComponent();
 
-            LoadingViewModel = new MainViewModel(worker, nameProcess);
-
-            this.DataContext = LoadingViewModel;
+            LoadingViewModel = new LoadWindowViewModel(); // this creates an instance of the ViewModel
+            this.DataContext = LoadingViewModel; // this sets the newly created ViewModel as the DataContext for the View
 
             if (LoadingViewModel.CloseAction == null)
                 LoadingViewModel.CloseAction = new Action(() => this.Close());
+
         }
 
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
-          
+
         }
         protected virtual void Dispose(bool disposing)
         {

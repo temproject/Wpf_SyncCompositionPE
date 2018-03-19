@@ -8,10 +8,7 @@ using System.Windows;
 
 namespace LoadingWindow.Model
 {
-    public class WorkerEventArgs
-    {
-        public String TextProcess { get { return Worker.TextProcess; } set { Worker.TextProcess = value; } }
-    }
+
 
     public static class Worker
     {

@@ -65,10 +65,7 @@ namespace LoadingWindow.ViewModel
             }
         }
 
-        private Worker.WorkerEventHandler OnWorkerEvent()
-        {
-            Console.WriteLine("");
-        }
+      
 
         private void StartWork()
         {

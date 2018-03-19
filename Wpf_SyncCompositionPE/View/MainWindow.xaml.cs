@@ -16,7 +16,7 @@ namespace Wpf_SyncCompositionPE
         {
             InitializeComponent();
 
-            viewModel = new MainWindowViewModel(/*startObjectRef, */this);
+            viewModel = new MainWindowViewModel();
 
             this.DataContext = viewModel;
 

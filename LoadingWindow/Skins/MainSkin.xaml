@@ -3,6 +3,7 @@
 
     <!--<local:ValueToAngleConverter x:Key="ValueToAngleConverter"></local:ValueToAngleConverter>-->
     
+
     <Storyboard x:Key="Storyboard1" RepeatBehavior="Forever">
         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="ellipse">
             <EasingColorKeyFrame KeyTime="0" Value="#FF009696"/>

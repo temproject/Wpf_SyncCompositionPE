@@ -71,16 +71,7 @@
     <Compile Include="UserControl%28not use%29\ProgressCircleControl.xaml.cs">
       <DependentUpon>ProgressCircleControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\LoadWindowViewModel.cs" />
     <Compile Include="UserControl%28not use%29\ValueConverterViewModel.cs" />
-    <Page Include="LoadingMainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="LoadingMainWindow.xaml.cs">
-      <DependentUpon>LoadingMainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Page Include="LoadingWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

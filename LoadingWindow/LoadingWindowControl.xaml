@@ -4,8 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LoadingWindow"
+              xmlns:vm="clr-namespace:LoadingWindow.ViewModel"
+                   xmlns:model="clr-namespace:LoadingWindow.Model"
              mc:Ignorable="d" 
-             d:DesignHeight="80" d:DesignWidth="100" x:Name="_this">
+            x:Name="loadingWindowControl" Background="{x:Null}" Width="Auto" >
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -18,26 +20,20 @@
         <EventTrigger RoutedEvent="FrameworkElement.Loaded">
             <BeginStoryboard Storyboard="{StaticResource Storyboard1}"/>
         </EventTrigger>
+        
     </UserControl.Triggers>
-    <Grid x:Name="LayoutRoot" Height="80" Width="102">
 
-        <!--<TextBlock FontSize="36"
-                   FontWeight="Bold"
-                   Foreground="Purple"
-                   Text="{Binding WelcomeTitle}"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   TextWrapping="Wrap" />-->
-
-        <Ellipse x:Name="ellipse4" Fill="#7F009696" Margin="72,22,0,0" Width="15" Height="15" VerticalAlignment="Top" HorizontalAlignment="Left" RenderTransformOrigin="1.133,0.767"/>
-        <Ellipse x:Name="ellipse" Margin="0,22,72,0" Height="15" Width="15" VerticalAlignment="Top" HorizontalAlignment="Right"  RenderTransformOrigin="-0.683,0.598" Fill="#7F009696" />
-        <Ellipse x:Name="ellipse1" Fill="#7F009696" Margin="32,62,55,0" Height="15" Width="15" VerticalAlignment="Top" RenderTransformOrigin="0.489,1"/>
-        <Ellipse x:Name="ellipse2" Fill="#7F009696" Margin="31,0,0,61" Width="15" Height="15"  HorizontalAlignment="Left"  VerticalAlignment="Bottom" RenderTransformOrigin="-0.911,0.867"/>
-        <!--<TextBlock x:Name="textBlock" TextAlignment="Center" VerticalAlignment="Center"  HorizontalAlignment="Center" Width="37" Height="auto" FontSize="14" FontWeight="ExtraBold" TextWrapping="Wrap" Text="{Binding Percent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="#7F009696" Margin="33,30,32,28" RenderTransformOrigin="0.5,0.5" />-->
-        <Ellipse x:Name="ellipse3" Fill="#7F009696" Margin="55,0,32,3" Height="15" Width="15" VerticalAlignment="Bottom" RenderTransformOrigin="0.867,3.267"/>
-        <Ellipse x:Name="ellipse5" Margin="15,0,72,23" Height="15" Width="15" VerticalAlignment="Bottom" RenderTransformOrigin="-0.683,0.598" Fill="#7F009696" />
-        <Ellipse x:Name="ellipse7" Fill="#7F009696" Margin="0,42,15,0" Width="15" Height="15" HorizontalAlignment="Right"  VerticalAlignment="Top" RenderTransformOrigin="0.567,1.367"/>
-        <Ellipse x:Name="ellipse6" Fill="#7F009696" Margin="0,0,31,61" Width="15" Height="15" HorizontalAlignment="Right"  VerticalAlignment="Bottom" RenderTransformOrigin="0.6,1.333"/>
-
-    </Grid>
-    </UserControl>
+    <StackPanel HorizontalAlignment="Center" Orientation="Vertical"  Visibility="{Binding Worker.VisibilityDownloadControl,FallbackValue=Hidden}">
+        <Grid x:Name="LayoutRoot">
+            <Ellipse x:Name="ellipse1" Fill="#7F009696" Height="15" Width="15" RenderTransformOrigin="0.489,1" Margin="55,39,10,26"/>
+            <Ellipse x:Name="ellipse2" Fill="#7F009696" Height="15" Width="15" RenderTransformOrigin="-0.911,0.867" Margin="10,39,55,26"/>
+            <Ellipse x:Name="ellipse"  Fill="#7F009696" Height="15" Width="15" RenderTransformOrigin="-0.683,0.598" Margin="23,55,42,10"/>
+            <Ellipse x:Name="ellipse7" Fill="#7F009696" Height="15" Width="15" RenderTransformOrigin="0.567,1.367" Margin="42,4,23,61"/>
+            <Ellipse x:Name="ellipse4" Fill="#7F009696" Height="15" Width="15" RenderTransformOrigin="1.133,0.767" Margin="42,55,23,10"  />
+            <Ellipse x:Name="ellipse5" Fill="#7F009696" Height="15" Width="15" RenderTransformOrigin="-0.683,0.598" Margin="10,19,55,46"/>
+            <Ellipse x:Name="ellipse3" Fill="#7F009696" Height="15" Width="15" RenderTransformOrigin="0.867,3.267" Margin="55,19,10,46" />
+            <Ellipse x:Name="ellipse6" Fill="#7F009696" Height="15" Width="15" RenderTransformOrigin="0.6,1.333" Margin="23,4,42,61"/>
+        </Grid>
+        <TextBlock   Text="{Binding Worker.TextProcess}" TextWrapping="WrapWithOverflow"  Height="40" Foreground="Black" HorizontalAlignment="Center"  VerticalAlignment="Center"  TextAlignment="Left" />
+    </StackPanel>
+</UserControl>

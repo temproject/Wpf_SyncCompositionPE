@@ -4,10 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:local="clr-namespace:Wpf_SyncCompositionPE"
              xmlns:TreeView="clr-namespace:Wpf_SyncCompositionPE.Model"
+             xmlns:loadControl="clr-namespace:LoadingWindow;assembly=LoadingWindow"
+             xmlns:loadControlVM="clr-namespace:LoadingWindow.ViewModel;assembly=LoadingWindow"
              xmlns:data="clr-namespace:Wpf_SyncCompositionPE.ViewModel" x:Class="Wpf_SyncCompositionPE.TreeViewUserControl">
     <Grid>
+
+        <loadControl:LoadingWindowControl HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 30 0 30" />
         <DockPanel>
-            <TreeView:TreeViewCustom AllowsColumnReorder="True" ItemsSource="{Binding Tree}"  >
+            <TreeView:TreeViewCustom AllowsColumnReorder="True" ItemsSource="{Binding Tree}">
                 <!-- Создание шаблона элемента, чтобы указать ItemsSource -->
                 <TreeView:TreeViewCustom.ItemTemplate >
                     <!--<HierarchicalDataTemplate  DataType="{x:Type data:TreeViewModel}" 

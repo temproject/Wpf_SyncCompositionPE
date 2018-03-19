@@ -21,6 +21,11 @@ namespace Wpf_SyncCompositionPE.ViewModel
             return Instances;
         }
 
+        public Worker Worker
+        {
+            get { return Worker.Instance; }
+        }
+
         static public int Instances = 0;
         //static public double PercentTreeBuild = 0;
         //static public int AmountAllItemsTree = 0;

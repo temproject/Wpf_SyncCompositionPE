@@ -15,7 +15,7 @@
   ******* Основные типы триггеров: 
 	o Trigger – Самый простой триггер. Следит за изменением значения свойства. 
 	o MultiTrigger – Похож на первый но срабатывает при выполнении множества условий. 
-	o DataTriger – Срабатывает при изменении в связанных с ним данных. 
+	o DataTrigger – Срабатывает при изменении в связанных с ним данных. 
 	o MultiDataTrigger – множество триггеров данных. 
 	o EventTrigger – При возникновении события он применяет соответствующую анимацию.  -->
 
@@ -85,7 +85,6 @@
                         Value="M 0 2 L 0 3 L 5 3 L 5 2 Z"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
-
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -107,7 +106,7 @@
             <ItemsPresenter x:Name="ItemsPresenter" Visibility="Collapsed" />
         </StackPanel>
         <ControlTemplate.Triggers>
-            <!--Если значение свойства ShortName объекта с этим стилем будет равно USA - текст станет красного цвета-->
+
             <DataTrigger Binding="{Binding Path=IsItemForSynh}" Value="true">
                 <!--<Setter TargetName="Border" Property="Background"
                     Value="#7777C5"/>-->

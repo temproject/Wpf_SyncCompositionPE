@@ -54,7 +54,8 @@ namespace LoadingWindow.ViewModel
             }
             else // Код работает «по-настоящему»
             {
-                Worker.WorkerEvent += OnWorkerEvent();
+                
+                Worker.workerEvent += OnWorkerEvent;
 
                 //Percent = "0%";
                 if (LoadingWindow.Model.Worker.IsWorkComplet)
@@ -65,9 +66,11 @@ namespace LoadingWindow.ViewModel
             }
         }
 
-        private Worker.WorkerEventHandler OnWorkerEvent()
+        private void OnWorkerEvent()
         {
-            Console.WriteLine("");
+            this.TextProcess = Worker.TextProcess;
+           //turn 
+            //throw new NotImplementedException();
         }
 
         private void StartWork()

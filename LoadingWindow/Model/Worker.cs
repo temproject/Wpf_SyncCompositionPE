@@ -12,23 +12,23 @@ namespace LoadingWindow.Model
     {
         public String TextProcess { get { return Worker.TextProcess; } set { Worker.TextProcess = value; } }
     }
-
+    public delegate void WorkerEventHandler();
     public static class Worker
     {
 
         #region create event
-        public delegate void WorkerEventHandler(object source, EventArgs args);
+        
 
-        public static event WorkerEventHandler WorkerEvent = delegate { };
+        public static event WorkerEventHandler workerEvent/* = delegate { }*/;
 
         public static void OnWorkerEvent()
         {
-            if (WorkerEvent != null)
-                WorkerEvent(null, EventArgs.Empty);
+            if (workerEvent != null)
+                workerEvent();
         }
         static Worker()
         {
-            OnWorkerEvent();
+            //OnWorkerEvent();
         }
         #endregion
 
@@ -53,6 +53,7 @@ namespace LoadingWindow.Model
                 }
 
                 _textProcess = value;
+                OnWorkerEvent();
             }
         }
 

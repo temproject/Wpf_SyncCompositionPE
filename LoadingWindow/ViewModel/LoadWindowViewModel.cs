@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight;
 using LoadingWindow.Model;
 using System;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace LoadingWindow.ViewModel
@@ -15,7 +16,6 @@ namespace LoadingWindow.ViewModel
     /// </summary>
     public class LoadWindowViewModel : ViewModelBase
     {
-
 
         private string _textProcess = string.Empty;
 
@@ -54,6 +54,8 @@ namespace LoadingWindow.ViewModel
             }
             else // Код работает «по-настоящему»
             {
+                Worker.WorkerEvent += OnWorkerEvent();
+
                 //Percent = "0%";
                 if (LoadingWindow.Model.Worker.IsWorkComplet)
                 {
@@ -61,6 +63,11 @@ namespace LoadingWindow.ViewModel
                     StartWork();
                 }
             }
+        }
+
+        private Worker.WorkerEventHandler OnWorkerEvent()
+        {
+            Console.WriteLine("");
         }
 
         private void StartWork()

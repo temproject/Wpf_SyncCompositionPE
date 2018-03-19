@@ -4,11 +4,33 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace LoadingWindow.Model
 {
+    public class WorkerEventArgs
+    {
+        public String TextProcess { get { return Worker.TextProcess; } set { Worker.TextProcess = value; } }
+    }
+
     public static class Worker
     {
+
+        #region create event
+        public delegate void WorkerEventHandler(object source, EventArgs args);
+
+        public static event WorkerEventHandler WorkerEvent = delegate { };
+
+        public static void OnWorkerEvent()
+        {
+            if (WorkerEvent != null)
+                WorkerEvent(null, EventArgs.Empty);
+        }
+        static Worker()
+        {
+            OnWorkerEvent();
+        }
+        #endregion
 
         private static string _textProcess = string.Empty;
 

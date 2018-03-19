@@ -52,7 +52,7 @@
                     <CheckBox Grid.Column="1"  Command="{Binding SyncOnlyPlanResCommand, UpdateSourceTrigger=PropertyChanged}" IsChecked="True"  Margin="20 0 10 0" x:Name="checkBoxOnlyPlan" Content="Только плановые ресурсы"/>
                 </UniformGrid>
 
-                <Button x:Name="Refresh" Grid.Row="2" Grid.ColumnSpan="2" Margin="10"  VerticalAlignment="Center"  Content="Обновить" Command="{Binding BuildTreeCommand}" />
+                <Button x:Name="Refresh" Grid.Row="2" Grid.ColumnSpan="2" Margin="10"  VerticalAlignment="Center"  Content="Обновить" Command="{Binding BuildTreeCommand}"/>
 
                 <TabControl Grid.Row="3"  Grid.ColumnSpan="2" >
                     <TabItem Header="Настройка синхронизации">

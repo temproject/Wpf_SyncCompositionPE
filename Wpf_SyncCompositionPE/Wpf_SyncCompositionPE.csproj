@@ -42,10 +42,6 @@
       <HintPath>..\packages\MvvmLightLibs.5.4.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="LoadingWindow, Version=0.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LoadingWindow\bin\Debug\LoadingWindow.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -59,13 +55,11 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="TFlex.DOCs.Model, Version=14.4.0.100, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\T-FLEX DOCs 15 (15.0.1.6)\Program\TFlex.DOCs.Model.dll</HintPath>
+    <Reference Include="TFlex.DOCs.Model">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\T-FLEX DOCs 15\Program\TFlex.DOCs.Model.dll</HintPath>
     </Reference>
-    <Reference Include="TFlex.DOCs.ProjectManagement, Version=14.4.0.100, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\T-FLEX DOCs 15 (15.0.1.6)\Program\TFlex.DOCs.ProjectManagement.dll</HintPath>
+    <Reference Include="TFlex.DOCs.ProjectManagement">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\T-FLEX DOCs 15\Program\TFlex.DOCs.ProjectManagement.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -139,6 +133,12 @@
   <ItemGroup>
     <Resource Include="Images\project.ico" />
     <Resource Include="Images\PE.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LoadingWindow\LoadingWindow.csproj">
+      <Project>{0695366a-289d-4cb7-be07-aa4510a951c4}</Project>
+      <Name>LoadingWindow</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

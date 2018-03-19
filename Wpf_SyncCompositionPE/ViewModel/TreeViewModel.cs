@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using LoadingWindow.Model;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -74,6 +75,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
             // Начинаем обрабатывать элементы начиная с корня.
             //if (ProjectElement != projectElement)
+            Worker.TextProcess = Name;
             LoadChildren();
 
             if (parent == null && this.IsExpanded == false)

@@ -61,7 +61,7 @@ namespace LoadingWindow.ViewModel
                 if (LoadingWindow.Model.Worker.IsWorkComplet)
                 {
                     TextProcess = LoadingWindow.Model.Worker.TextProcess;
-                    StartWork();
+                    Worker.StartWork(Close);
                 }
             }
         }
@@ -73,13 +73,7 @@ namespace LoadingWindow.ViewModel
             //throw new NotImplementedException();
         }
 
-        private void StartWork()
-        {
-            if (LoadingWindow.Model.Worker.Work == null)
-                throw new ArgumentNullException();
-
-            Task.Factory.StartNew(LoadingWindow.Model.Worker.Work).ContinueWith(t => { Close(); }, TaskScheduler.FromCurrentSynchronizationContext());
-        }
+     
 
         #region Кнопка Отмена
 

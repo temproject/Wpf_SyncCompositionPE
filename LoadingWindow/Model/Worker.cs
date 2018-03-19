@@ -8,28 +8,22 @@ using System.Windows;
 
 namespace LoadingWindow.Model
 {
-    public class WorkerEventArgs
-    {
-        public String TextProcess { get { return Worker.TextProcess; } set { Worker.TextProcess = value; } }
-    }
+
     public delegate void WorkerEventHandler();
+
     public static class Worker
     {
 
         #region create event
         
-
-        public static event WorkerEventHandler workerEvent/* = delegate { }*/;
+        public static event WorkerEventHandler workerEvent;
 
         public static void OnWorkerEvent()
         {
             if (workerEvent != null)
                 workerEvent();
         }
-        static Worker()
-        {
-            //OnWorkerEvent();
-        }
+
         #endregion
 
         private static string _textProcess = string.Empty;
@@ -74,7 +68,13 @@ namespace LoadingWindow.Model
 
             //   Task.Factory.StartNew(Work).ContinueWith(t => { IsWorkComplet = false; }, TaskScheduler.FromCurrentSynchronizationContext());
         }
+        static public void StartWork(Action ContinueWithAction)
+        {
+            if (Work == null)
+                throw new ArgumentNullException();
 
+            Task.Factory.StartNew(LoadingWindow.Model.Worker.Work).ContinueWith(t => { ContinueWithAction.Invoke(); }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
 
 
         private static bool _isWorkComplet = true;

@@ -54,8 +54,7 @@
       <HintPath>C:\Program Files (x86)\T-FLEX DOCs 15 (15.0.1.6)\Program\TFlex.DOCs.Model.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
-    <Reference Include="Wpf_SyncCompositionPE, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Wpf_SyncCompositionPE">
       <HintPath>..\Wpf_SyncCompositionPE\bin\Debug\Wpf_SyncCompositionPE.dll</HintPath>
     </Reference>
   </ItemGroup>

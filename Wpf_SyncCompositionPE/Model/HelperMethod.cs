@@ -30,5 +30,7 @@ namespace Wpf_SyncCompositionPE.Model
             return false;
         }
 
+
+
     }
 }

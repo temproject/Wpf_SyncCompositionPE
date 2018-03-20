@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication", "Conso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadingWindow", "LoadingWindow\LoadingWindow.csproj", "{0695366A-289D-4CB7-BE07-AA4510A951C4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HierarchicalTreeControl", "HierarchicalTreeControl\HierarchicalTreeControl.csproj", "{6F60144E-3157-4775-BA2A-0EC3B1900C97}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{0695366A-289D-4CB7-BE07-AA4510A951C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0695366A-289D-4CB7-BE07-AA4510A951C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0695366A-289D-4CB7-BE07-AA4510A951C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F60144E-3157-4775-BA2A-0EC3B1900C97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F60144E-3157-4775-BA2A-0EC3B1900C97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F60144E-3157-4775-BA2A-0EC3B1900C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F60144E-3157-4775-BA2A-0EC3B1900C97}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

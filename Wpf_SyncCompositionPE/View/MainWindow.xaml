@@ -3,11 +3,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Wpf_SyncCompositionPE.ViewModel"
-        xmlns:tree="clr-namespace:Wpf_SyncCompositionPE"
+        xmlns:local="clr-namespace:Wpf_SyncCompositionPE"
         WindowStartupLocation="CenterScreen"
         Title="Синхронизация состава работ"  Height="500" Width="700" MinHeight="450" MinWidth="650">
-    <!--<Window.DataContext>
+    <!--<Window.DataContext>         
         <local:MainWindowViewModel></local:MainWindowViewModel>
     </Window.DataContext>-->
     <Grid>
@@ -56,13 +55,13 @@
 
                 <TabControl Grid.Row="3"  Grid.ColumnSpan="2" >
                     <TabItem Header="Настройка синхронизации">
-                        <tree:TreeViewUserControl></tree:TreeViewUserControl>
+                        <local:TreeViewUserControl></local:TreeViewUserControl>
                     </TabItem>
                 </TabControl>
 
                 <UniformGrid Grid.Row="4" Grid.ColumnSpan="2" Rows="1" Columns="2" >
                     <Button  Grid.Row="4" Grid.Column="0"  Margin="10 5 10 8" VerticalAlignment="Center" Content="Синхронизировать" Command="{Binding SyncCommand}" IsEnabled="{Binding Worker.IsWorkComplet}"/>
-                    <Button  Grid.Row="4" Grid.Column="1"  Margin="10 5 10 8"  VerticalAlignment="Center" Content="Закрыть" Command="{Binding CloseCommand}" CommandParameter="{Binding ElementName=thisWindow}" IsEnabled="{Binding Worker.IsWorkComplet}"/>
+                    <Button  Grid.Row="4" Grid.Column="1"  Margin="10 5 10 8"  VerticalAlignment="Center" Content="Закрыть" Command="{Binding CloseCommand}" CommandParameter="{Binding ElementName=thisWindow}"/>
                 </UniformGrid>
             </Grid>
         </ContentControl>

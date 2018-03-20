@@ -69,15 +69,23 @@ namespace LoadingWindow.Model
                 IsWorkComplet = false;
 
                 System.Windows.Input.CommandManager.InvalidateRequerySuggested();
+                Console.WriteLine("StartNew");
                 Task.Factory.StartNew(Work).ContinueWith(t => { Finish(); }, TaskScheduler.FromCurrentSynchronizationContext());
+                Console.WriteLine("FinishWork");
             }
         }
 
- 
+
         void Finish()
         {
+            Console.WriteLine("Finish");
             IsWorkComplet = true;
             Work = null;
+            _currentNumberIterat = 0;
+            _textProcess = string.Empty;
+            _numberAllIterat = 0;
+            _percent = "0%";
+            Cancel = false;
             System.Windows.Input.CommandManager.InvalidateRequerySuggested();
         }
 
@@ -110,6 +118,65 @@ namespace LoadingWindow.Model
         private bool _isWorkComplet = true;
 
         /// <summary>
+        /// Получить процент выполнения
+        /// </summary>
+        /// <param name="current"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        private double GetPercent(int current, int count)
+        {
+            return Math.Round(100.0 * current / count);
+        }
+
+        private int _numberAllIterat = 0;
+
+        /// <summary>
+        /// Количество итераций всего
+        /// </summary>
+        public int numberAllIterat
+        {
+            get { return _numberAllIterat; }
+            set { _numberAllIterat = value; }
+        }
+
+        private int _currentNumberIterat = 0;
+
+        /// <summary>
+        /// Номер текущей итерации
+        /// </summary>
+        public int CurrentNumberIterat
+        {
+            get { return _currentNumberIterat; }
+            set { _currentNumberIterat = value; RaisePropertyChanged("Percent"); }
+        }
+
+
+        private string _percent = "0%";
+
+        public string Percent
+        {
+            get
+            {
+                if (numberAllIterat == 0)
+                    _percent = "0%";
+                else
+                    _percent = GetPercent(CurrentNumberIterat, numberAllIterat ).ToString() + "%";
+                return _percent;
+            }
+        }
+
+        private bool _cancel = false;
+        /// <summary>
+        /// Отмена
+        /// </summary>
+        public bool Cancel
+        {
+            get { return _cancel; }
+            set { _cancel = value; if (_cancel) { TextProcess = "Отмена процесса";  } }
+        }
+
+
+        /// <summary>
         /// завершена ли работа
         /// </summary>
         public bool IsWorkComplet
@@ -119,7 +186,7 @@ namespace LoadingWindow.Model
             {
                 _isWorkComplet = value;
 
-                if(_isWorkComplet)
+                if (_isWorkComplet)
                     VisibilityDownloadControl = Visibility.Hidden.ToString();
                 else
                     VisibilityDownloadControl = Visibility.Visible.ToString();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LoadingWindow.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -197,11 +198,17 @@ namespace Wpf_SyncCompositionPE.Model
 
         #endregion
 
+        public Worker Worker
+        {
+            get { return Worker.Instance; }
+        }
 
         public void SynchronizingСomposition(TreeViewModel treeViewModel, bool IsCopyRes, bool IsCopyOnlyPlan/*, ref int amountAddObjects*//*, MainWindowViewModel mainWindowViewModel = null*/)
         {
             //if (MainWindowViewModel == null)
             //    MainWindowViewModel = mainWindowViewModel;
+
+            if (Worker.Cancel) return;
 
             ReferenceObject Parent = treeViewModel.PEForSync;
 

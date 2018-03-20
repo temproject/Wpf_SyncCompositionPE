@@ -1,9 +1,8 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Wpf_SyncCompositionPE"
-    xmlns:TreeView="clr-namespace:Wpf_SyncCompositionPE.Model">
-
+    xmlns:TreeView="clr-namespace:HierarchicalTreeControl.Model"
+    xmlns:local="clr-namespace:HierarchicalTreeControl">
     <!-- Ключевые свойства стиля: 
 	o Setters – коллекция объектов, которые автоматически устанавливают значение свойств элементов управления. 
 	o Triggers – коллекция объектов, которые позволяют автоматически изменять параметры стиля. 
@@ -24,7 +23,9 @@
     <TreeView:TreeViewCustomConverter x:Key="TreeViewCustomConverter"/>
 
     <!--<Style TargetType="{x:Type TreeViewItem}">
-        --><!--<Setter Property="HorizontalContentAlignment" Value="Stretch" />--><!--
+        -->
+    <!--<Setter Property="HorizontalContentAlignment" Value="Stretch" />-->
+    <!--
         <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
         <Setter Property="FontWeight" Value="Normal" />
@@ -107,7 +108,7 @@
         </StackPanel>
         <ControlTemplate.Triggers>
 
-            <DataTrigger Binding="{Binding Path=IsItemForSynh}" Value="true">
+            <DataTrigger Binding="{Binding Path=IsSelectObjToSynch}" Value="true">
                 <!--<Setter TargetName="Border" Property="Background"
                     Value="#7777C5"/>-->
                 <Setter Property="Foreground" 
@@ -223,3 +224,4 @@
         </Setter>
     </Style>
 </ResourceDictionary>
+

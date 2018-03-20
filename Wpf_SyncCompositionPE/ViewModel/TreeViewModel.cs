@@ -1,4 +1,5 @@
-﻿using LoadingWindow.Model;
+﻿using HierarchicalTreeControl.ViewModel;
+using LoadingWindow.Model;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using TFlex.DOCs.Model.References;
+
 using Wpf_SyncCompositionPE.Model;
 using Wpf_SyncCompositionPE.Properties;
 
@@ -20,6 +22,8 @@ namespace Wpf_SyncCompositionPE.ViewModel
         {
             return Instances;
         }
+
+
 
         public Worker Worker
         {
@@ -55,19 +59,26 @@ namespace Wpf_SyncCompositionPE.ViewModel
             //AmountAllItemsTree = 0;
         }
 
+
+
         public TreeViewModel(ReferenceObject projectElement, TreeViewModel parent, ReferenceObject startSelectBiggerPE = null/*, MainWindowViewModel mainWindowViewModel = null*/)
          : base(parent, false)
         {
 
+            Worker.CurrentNumberIterat++;
+
+            if (Worker.Cancel) { System.Console.WriteLine("Конструктор построения дерева  - отмена ");  return; }
+
             //if (MainWindowViewModel == null)
             //    MainWindowViewModel = mainWindowViewModel;
 
-            //if (Instances == 0)
-            //    AmountAllItemsTree = projectElement.Children.RecursiveLoad().Count;
 
-            //var percent = Math.Round(100.0 * Instances / AmountAllItemsTree);
+            if (Worker.Percent == "0%")
+            {
+                Worker.numberAllIterat = projectElement.Children.RecursiveLoad().Count + 1;
+            }
 
-            //PercentTreeBuild = percent == 0 ? 1 : percent;
+    
 
             //MainWindowViewModel.Percent = PercentTreeBuild;
 
@@ -78,9 +89,12 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
             Interlocked.Increment(ref Instances);
 
+         
+
+
             // Начинаем обрабатывать элементы начиная с корня.
             //if (ProjectElement != projectElement)
-            Worker.TextProcess = Name;
+
             LoadChildren();
 
             if (parent == null && this.IsExpanded == false)
@@ -222,11 +236,11 @@ namespace Wpf_SyncCompositionPE.ViewModel
                 {
                     if (false == _isObjectToSync)
                     {
-                        base.clearAllCheckboxes(this);
+                       clearAllCheckboxes(this);
                     }
                     else
                     {
-                        base.MarkAllParents(this.Parent as TreeViewModel);
+                        MarkAllParents(this.Parent as TreeViewModel);
                     }
                 }
                 RaisePropertyChanged("IsObjectToSync");
@@ -234,6 +248,42 @@ namespace Wpf_SyncCompositionPE.ViewModel
             }
         }
 
+
+        #region работа с чекбоксом
+
+        /// <summary>
+        /// Снять галочку в дочернего элемента, если сняли с родителя
+        /// </summary>
+        /// <param name="data"></param>
+        public void clearAllCheckboxes(TreeViewModel data)
+        {
+            if (data == null) return;
+
+            if ((bool)data.IsSelectObjToSynch == false) return;
+
+            if ((bool)data.IsObjectToSync == true)
+                data.IsObjectToSync = false;
+
+            foreach (var child in data.Children.OfType<TreeViewModel>())
+                clearAllCheckboxes(child);
+        }
+
+        /// <summary>
+        /// Проставить галочку родителю, если проставили дочернему
+        /// </summary>
+        /// <param name="data"></param>
+        public void MarkAllParents(TreeViewModel data)
+        {
+            if (data == null) { return; }
+
+            if ((bool)data.IsSelectObjToSynch == false) { return; }
+
+            if ((bool)data.IsObjectToSync == false)
+                data.IsObjectToSync = true;
+
+            MarkAllParents(data.Parent as TreeViewModel);
+        }
+        #endregion
         bool? _isSelectObjToSynch = null;
 
         /// <summary>
@@ -415,7 +465,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         private string _name;
 
 
-        public new string Name
+        public  string Name
         {
             get
             {

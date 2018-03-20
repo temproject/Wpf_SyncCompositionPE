@@ -31,7 +31,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
     public class MainWindowViewModel : ViewModelBase
     {
 
-
+        
         public Worker Worker
         {
             get { return Worker.Instance; }
@@ -312,15 +312,30 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         }
 
+
+        private void Waite()
+        {
+            while (!Worker.IsWorkComplet) { }
+
+   
+            return;
+            
+        }
         public void Close(Window w)
         {
-            bool exit = true;
+            //bool exit = true;
 
-            if (exit)
-            {
+            Worker.Cancel = true;
+
+            System.Threading.Tasks.Task.Run(() => Waite())
+                .ContinueWith(t => 
+                {
                 Cleanup();
-                w.Close(); // Invoke the Action previously defined by the View
-            }
+                  
+                w.Close();
+                }, System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext()); ;
+
+         
         }
 
         #endregion
@@ -365,6 +380,11 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         }
 
+        private void Wait()
+        {
+            System.Threading.Thread.Sleep(3500);
+        }
+    
         void TreeViewBuild_DoWork()
         {
 
@@ -373,13 +393,15 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
             treeViewModel = new TreeViewModel(syncCompositionPE.StartObjectDetail, null, syncCompositionPE.StartRefObject/*, this*/);
 
+            if (Worker.Cancel) { return; }
+
             _dispatcher.Invoke(new Action(() =>
             {
                 Tree.Add(treeViewModel);
             }));
 
             if (treeViewModel.ContainsObjSync)
-                System.Threading.Thread.Sleep(3500);
+                Wait();
 
 
         }

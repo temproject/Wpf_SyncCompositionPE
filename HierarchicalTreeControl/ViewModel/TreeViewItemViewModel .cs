@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Wpf_SyncCompositionPE.ViewModel
+namespace HierarchicalTreeControl.ViewModel
 {
     /// <summary>
     /// Базовый класс для всех классов ViewModel, отображаемых TreeViewItems.
@@ -20,7 +22,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         readonly TreeViewItemViewModel _parent;
 
-        readonly TreeViewModel _treeViewModel;
+
 
 
         bool _isExpanded;
@@ -36,8 +38,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
             _children = new ObservableCollection<TreeViewItemViewModel>();
 
-            _treeViewModel = this as TreeViewModel;
-
+       
             if (lazyLoadChildren)
                 _children.Add(DummyChild);
         }
@@ -51,10 +52,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         #region Presentation Members
 
-        public string Name
-        {
-            get { return _treeViewModel.Name; }
-        }
+     
 
         #region Children
 
@@ -78,6 +76,10 @@ namespace Wpf_SyncCompositionPE.ViewModel
             get { return this.Children.Count == 1 && this.Children[0] == DummyChild; }
         }
 
+
+
+        #endregion // HasLoadedChildren
+
         /// <summary>
         /// Возвращает true, если имеются дети
         /// </summary>
@@ -85,8 +87,6 @@ namespace Wpf_SyncCompositionPE.ViewModel
         {
             get { return this.Children.Count > 0 && this.Children[0] != DummyChild; }
         }
-
-        #endregion // HasLoadedChildren
 
         #region IsExpanded
 
@@ -121,30 +121,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         #endregion // IsExpanded
 
-        #region Visibility
-
-        //private string visibility = "Collapsed";
-
-        ///// <summary>
-        ///// Флаг отвечающий за отображение чекбокса в дереве
-        ///// </summary>
-        //public string Visibility
-        //{
-        //    get
-        //    {
-        //        if ((bool)IsObjectToSync)
-        //            visibility = "Visible";
-        //        else
-        //            visibility = "Collapsed";
-
-        //        return visibility;
-        //    }
-        //}
-
-
-
-        #endregion // IsExpanded
-
+      
         #region IsSelected
 
         /// <summary>
@@ -166,16 +143,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         #endregion // IsSelected
 
-        #region IsItemForSynh
-
-
-        public bool IsItemForSynh
-        {
-         
-            get {  return _treeViewModel.IsObjectToSync; }
-        }
-
-        #endregion // IsItemForSynh
+    
 
         #region LoadChildren
 
@@ -186,31 +154,6 @@ namespace Wpf_SyncCompositionPE.ViewModel
         protected virtual void LoadChildren()
         {
 
-        }
-
-        public void clearAllCheckboxes(TreeViewModel data)
-        {
-            if (data == null) return;
-
-            if ((bool)data.IsSelectObjToSynch == false) return;
-
-            if ((bool)data.IsObjectToSync == true)
-                data.IsObjectToSync = false;
-
-            foreach (var child in data.Children.OfType<TreeViewModel>())
-                clearAllCheckboxes(child);
-        }
-
-        public void MarkAllParents(TreeViewModel data)
-        {
-            if (data == null) { return; }
-
-            if ((bool)data.IsSelectObjToSynch == false) { return; }
-
-            if ((bool)data.IsObjectToSync == false)
-                data.IsObjectToSync = true;
-
-            MarkAllParents(data.Parent as TreeViewModel);
         }
 
         #endregion // LoadChildren
@@ -224,18 +167,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         #endregion // Parent
 
-        //#region NameContainsText
-
-        //public bool NameContainsText(string text)
-        //{
-        //    if (String.IsNullOrEmpty(text) || String.IsNullOrEmpty(this.Name))
-        //        return false;
-
-        //    return this.Name.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) > -1;
-        //}
-
-        //#endregion // NameContainsText
-
+     
         #endregion // Presentation Members
     }
 }

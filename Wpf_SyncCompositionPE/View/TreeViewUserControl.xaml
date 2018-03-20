@@ -1,31 +1,31 @@
-﻿<UserControl
+﻿<UserControl  x:Class="Wpf_SyncCompositionPE.TreeViewUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:local="clr-namespace:Wpf_SyncCompositionPE"
-             xmlns:TreeView="clr-namespace:Wpf_SyncCompositionPE.Model"
+             xmlns:treeViewCustom="clr-namespace:HierarchicalTreeControl.Model;assembly=HierarchicalTreeControl"
              xmlns:loadControl="clr-namespace:LoadingWindow;assembly=LoadingWindow"
-             xmlns:loadControlVM="clr-namespace:LoadingWindow.ViewModel;assembly=LoadingWindow"
-             xmlns:data="clr-namespace:Wpf_SyncCompositionPE.ViewModel" x:Class="Wpf_SyncCompositionPE.TreeViewUserControl">
+             xmlns:data="clr-namespace:Wpf_SyncCompositionPE.ViewModel;assembly=Wpf_SyncCompositionPE">
+             
+    <!--xmlns:data="clr-namespace:Wpf_SyncCompositionPE.ViewModel;assembly=Wpf_SyncCompositionPE"-->
     <Grid>
 
         <loadControl:LoadingWindowControl HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 30 0 30" />
         <DockPanel>
-            <TreeView:TreeViewCustom AllowsColumnReorder="True" ItemsSource="{Binding Tree}">
+            <treeViewCustom:TreeViewCustom AllowsColumnReorder="True" ItemsSource="{Binding Tree}">
                 <!-- Создание шаблона элемента, чтобы указать ItemsSource -->
-                <TreeView:TreeViewCustom.ItemTemplate >
+                <treeViewCustom:TreeViewCustom.ItemTemplate >
                     <!--<HierarchicalDataTemplate  DataType="{x:Type data:TreeViewModel}" 
           ItemsSource="{Binding Children}" />-->
                     <HierarchicalDataTemplate  ItemsSource="{Binding Children}" />
-                </TreeView:TreeViewCustom.ItemTemplate>
-                <TreeView:TreeViewCustom.Columns>
+                </treeViewCustom:TreeViewCustom.ItemTemplate>
+                <treeViewCustom:TreeViewCustom.Columns>
                     <!-- Создайте первый столбец, содержащий кнопку expand и имя типа .-->
                     <GridViewColumn Header="Наименование" Width="400">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <!--Кнопка Expander -->
-                                    <TreeView:TreeViewCustomExpander/>
+                                    <treeViewCustom:TreeViewCustomExpander/>
                                     <Image Width="16" Height="16" Margin="3,0" Source="{Binding PathIcon}" />
                                     <CheckBox IsChecked="{Binding IsObjectToSync}"  Visibility="{Binding VisibilityCheckBox}" VerticalAlignment="Center"/>
                                     <!--Отобразить имя-->
@@ -45,8 +45,8 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                </TreeView:TreeViewCustom.Columns>
-            </TreeView:TreeViewCustom>
+                </treeViewCustom:TreeViewCustom.Columns>
+            </treeViewCustom:TreeViewCustom>
         </DockPanel>
-    </Grid>
+   </Grid>
 </UserControl>

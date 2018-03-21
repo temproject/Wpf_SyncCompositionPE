@@ -22,9 +22,6 @@ namespace HierarchicalTreeControl.ViewModel
 
         readonly TreeViewItemViewModel _parent;
 
-
-
-
         bool _isExpanded;
         bool _isSelected;
 

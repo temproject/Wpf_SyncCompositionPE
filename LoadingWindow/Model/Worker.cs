@@ -1,21 +1,36 @@
 ﻿using GalaSoft.MvvmLight;
 using LoadingWindow.ViewModel;
 using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Threading;
 
 namespace LoadingWindow.Model
 {
 
+    public enum TypeWorker
+    {
+        LoadTree = 0,
+        SyncCompositionPE = 1
+    }
+
     public delegate void WorkerEventHandler(object sender, EventArgs e);
 
     public class Worker : ViewModelBase
     {
+
+        readonly object Lock = new object();
+
+        Queue works = new Queue();
+
+        public TypeWorker TypeWorker { get; set; }
 
         #region "Singleton"
 
@@ -40,56 +55,78 @@ namespace LoadingWindow.Model
                 // Иначе: возвращаем ссылку на существующий объект  (3)
                 return instance;
             }
-
         }
 
         #endregion
 
 
-        public Action Work { get; set; }
+        public void Produce(Action work)
+        {
+            lock (Lock)
+            {
+                works.Enqueue(work);
+            }
+        }
 
+        void Consume(string nameProcess)
+        {
+            ParameterizedThreadStart _startWork = new ParameterizedThreadStart(startWork);
+            Thread thread = new Thread(_startWork);
+            thread.Start(nameProcess);
+        }
 
+        public void StartWork(Action work, string nameProcess, TypeWorker TypeWorker)
+        {
+            this.TypeWorker = TypeWorker;
+            StartWork(work, nameProcess);
+        }
         public void StartWork(Action work, string nameProcess)
         {
-            if (work == null)
+            Produce(work);
+            Consume(nameProcess);
+        }
+
+        /// <summary>
+        /// Завершение процеса
+        /// </summary>
+        void startWork(object nameProcess)
+        {
+            lock (Lock)
             {
-                throw new ArgumentNullException();
-            }
+                TextProcess = nameProcess.ToString();
 
-            if (Work != null)
-                return;
-
-            Work = work;
-
-            //присваиваем текст процессу
-            TextProcess = nameProcess;
-
-            if (IsWorkComplet)//если процесс завершен можно запустить новый
-            {
                 IsWorkComplet = false;
 
-                System.Windows.Input.CommandManager.InvalidateRequerySuggested();
-                Console.WriteLine("StartNew");
-                Task.Factory.StartNew(Work).ContinueWith(t => { Finish(); }, TaskScheduler.FromCurrentSynchronizationContext());
-                Console.WriteLine("FinishWork");
+                (works.Dequeue() as Action).Invoke();
+
+                TextProcess = string.Empty;
+
+                CurrentNumberIterat = 0;
+
+                _percent = "0%";
+ 
+                Cancel = false;
+
+                IsWorkComplet = true;
+
+                numberAllIterat = 0;
             }
         }
 
 
-        void Finish()
+        /// <summary>
+        /// Получить процент выполнения
+        /// </summary>
+        /// <param name="current"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        private double GetPercent(int current, int count)
         {
-            Console.WriteLine("Finish");
-            IsWorkComplet = true;
-            Work = null;
-            _currentNumberIterat = 0;
-            _textProcess = string.Empty;
-            _numberAllIterat = 0;
-            _percent = "0%";
-            Cancel = false;
-            System.Windows.Input.CommandManager.InvalidateRequerySuggested();
+            return Math.Round(100.0 * current / count);
         }
 
         #region properties
+
         private string _textProcess = string.Empty;
 
         /// <summary>
@@ -111,22 +148,12 @@ namespace LoadingWindow.Model
 
                 _textProcess = value;
                 RaisePropertyChanged();
-                //ChangesTextProcessEvent(null, EventArgs.Empty);
             }
         }
 
         private bool _isWorkComplet = true;
 
-        /// <summary>
-        /// Получить процент выполнения
-        /// </summary>
-        /// <param name="current"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
-        private double GetPercent(int current, int count)
-        {
-            return Math.Round(100.0 * current / count);
-        }
+
 
         private int _numberAllIterat = 0;
 
@@ -143,6 +170,7 @@ namespace LoadingWindow.Model
 
         /// <summary>
         /// Номер текущей итерации
+        /// При увеличении номера итерации пересчитывается процент
         /// </summary>
         public int CurrentNumberIterat
         {
@@ -153,14 +181,22 @@ namespace LoadingWindow.Model
 
         private string _percent = "0%";
 
+        /// <summary>
+        /// Процент выполнения процесса
+        /// </summary>
         public string Percent
         {
             get
             {
-                if (numberAllIterat == 0)
+
+                if (_currentNumberIterat == 0 || numberAllIterat == 0)
                     _percent = "0%";
                 else
-                    _percent = GetPercent(CurrentNumberIterat, numberAllIterat ).ToString() + "%";
+                    _percent = GetPercent(_currentNumberIterat, numberAllIterat).ToString() + "%";
+
+                //обновление команд
+                System.Windows.Input.CommandManager.InvalidateRequerySuggested();
+
                 return _percent;
             }
         }
@@ -172,12 +208,12 @@ namespace LoadingWindow.Model
         public bool Cancel
         {
             get { return _cancel; }
-            set { _cancel = value; if (_cancel) { TextProcess = "Отмена процесса";  } }
+            set { _cancel = value; if (_cancel) { TextProcess = "Отмена процесса"; } }
         }
 
 
         /// <summary>
-        /// завершена ли работа
+        /// Признак завершения процесса
         /// </summary>
         public bool IsWorkComplet
         {
@@ -186,30 +222,7 @@ namespace LoadingWindow.Model
             {
                 _isWorkComplet = value;
 
-                if (_isWorkComplet)
-                    VisibilityDownloadControl = Visibility.Hidden.ToString();
-                else
-                    VisibilityDownloadControl = Visibility.Visible.ToString();
-
                 RaisePropertyChanged();
-                //OnChangesShowDownloadControlEvent(null, EventArgs.Empty);
-            }
-        }
-
-        private string _visibilityDownloadControl = Visibility.Hidden.ToString();
-
-        public string VisibilityDownloadControl
-        {
-            get
-            {
-                Console.WriteLine("Показать контрол !!!!загрузки {0}", _visibilityDownloadControl);
-                return _visibilityDownloadControl;
-            }
-            set
-            {
-                _visibilityDownloadControl = value;
-                RaisePropertyChanged();
-                //OnChangesShowDownloadControlEvent(null, EventArgs.Empty);
             }
         }
 

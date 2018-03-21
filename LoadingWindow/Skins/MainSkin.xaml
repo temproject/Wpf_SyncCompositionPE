@@ -2,8 +2,22 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--<local:ValueToAngleConverter x:Key="ValueToAngleConverter"></local:ValueToAngleConverter>-->
-    
 
+    <!--Стиль для StackPanel в котором хранится контрол загрузки-->
+    <Style x:Key="LoadControlStackPanel" TargetType="StackPanel">
+        <Style.Triggers>
+
+            <!-- если процент 0 или 100 то нужно скрыть контрол с анимацией загрузки-->
+            <DataTrigger Binding="{Binding Worker.Percent}" Value="0%">
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Worker.Percent}" Value="100%">
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </DataTrigger>
+
+        </Style.Triggers>
+    </Style>
+    
     <Storyboard x:Key="Storyboard1" RepeatBehavior="Forever">
         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="ellipse">
             <EasingColorKeyFrame KeyTime="0" Value="#FF009696"/>

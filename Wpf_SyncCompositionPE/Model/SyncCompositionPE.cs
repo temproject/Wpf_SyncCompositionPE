@@ -43,18 +43,12 @@ namespace Wpf_SyncCompositionPE.Model
                 if (_startRefObject == null)
                     _startRefObject = References.ProjectManagementReference.Find(_startRefObject.SystemFields.Guid);
 
-
-                Console.WriteLine("Выбранный в TFLEX DOCS элемент проекта: {0}", _startRefObject);
                 return _startRefObject;
             }
             set
             {
                 _startRefObject = value;
                 OnPropertyChanged();
-                //OnPropertyChanged("StartRefObject");
-
-                //nameof возвращает имя объекта
-                //OnPropertyChanged(nameof(StartRefObject));
             }
         }
 
@@ -66,9 +60,7 @@ namespace Wpf_SyncCompositionPE.Model
         {
             get
             {
-                var d = References.ProjectManagementReference.Find(ЗависимостьПроектаДетализации[Synchronization.SynchronizationParameterGuids.param_SlaveWork_Guid].GetGuid());
-                Console.WriteLine("Детализация выбранного в TFLEX DOCS элемента : {0}", d);
-                return d;
+                return References.ProjectManagementReference.Find(ЗависимостьПроектаДетализации[Synchronization.SynchronizationParameterGuids.param_SlaveWork_Guid].GetGuid()); ;
             }
         }
 
@@ -100,33 +92,21 @@ namespace Wpf_SyncCompositionPE.Model
         {
             get
             {
-
                 string SelectedName = string.Empty;
 
                 //есть выбранный элемент в combobox
                 if (_selectedDetailingProject != null)
                     SelectedName = _selectedDetailingProject.ToString();//получаем его наименование
 
-
                 //если наименование не пустое
                 if (!string.IsNullOrEmpty(SelectedName))
                 {
                     if (!_detailingProjects.IsListNullOrEmpty())
-                    {
                         _selectedDetailingProject = _detailingProjects.FirstOrDefault(d => d.ToString() == SelectedName);
-                    }
                     else
-                    {
                         _selectedDetailingProject = DetailingProjects.FirstOrDefault(d => d.ToString() == SelectedName);
-           
-                    }
-
                 }
-                else // нет наименования выбранного элемента проекта в combobox
-                {
 
-                }
-                Console.WriteLine("Выбранный в диалоге проект детализации : {0}", _selectedDetailingProject);
                 return _selectedDetailingProject;
             }
             set
@@ -134,13 +114,6 @@ namespace Wpf_SyncCompositionPE.Model
                 if (_selectedDetailingProject == value) return;
 
                 _selectedDetailingProject = value;
-
-                //Tree = null;
-
-                //if (value != null)
-                //    StartWorkLoading(TreeBuild);
-
-                //RaisePropertyChanged(nameof(SelectedDetailingProject));
             }
         }
 
@@ -186,12 +159,6 @@ namespace Wpf_SyncCompositionPE.Model
 
                 _hasDetailingProjects = HelperMethod.IsListNullOrEmpty(_detailingProjects);
 
-                Console.WriteLine("Получаем проекты детализации");
-                foreach (var item in _detailingProjects)
-                {
-                    Console.WriteLine(item);
-                }
-                Console.WriteLine(); Console.WriteLine();
                 return _detailingProjects;
             }
         }
@@ -205,10 +172,14 @@ namespace Wpf_SyncCompositionPE.Model
 
         public void SynchronizingСomposition(TreeViewModel treeViewModel, bool IsCopyRes, bool IsCopyOnlyPlan/*, ref int amountAddObjects*//*, MainWindowViewModel mainWindowViewModel = null*/)
         {
-            //if (MainWindowViewModel == null)
-            //    MainWindowViewModel = mainWindowViewModel;
+            if (Worker.Cancel) {  return; }
 
-            if (Worker.Cancel) return;
+            Worker.CurrentNumberIterat++;
+
+            if (Worker.Percent == "0%")
+            {
+                Worker.numberAllIterat = treeViewModel.ProjectElement.Children.RecursiveLoad().Count + 1;
+            }
 
             ReferenceObject Parent = treeViewModel.PEForSync;
 
@@ -244,12 +215,7 @@ namespace Wpf_SyncCompositionPE.Model
                 ,new Guid("0e1f8984-5ebe-4779-a9cd-55aa9c984745") ,new Guid("79b01004-3c10-465a-a6fb-fe2aa95ae5b8")
                 ,new Guid("339ffc33-55b2-490f-b608-a910c1f59f51")};
 
-                //Console.WriteLine(pe_treeItem.ReferenceObject + " " + pe_treeItem.PEForSync);
-                //Console.WriteLine("Что копируем {0}, Тип нового объекта {1}, где создаем {2}", pe_treeItem.ReferenceObject, TypePE, pe_treeItem.PEForSync);
-
-                //pe_treeItem.ProjectElement.Refresh(pe_treeItem.ProjectElement);
-
-                //var newPE = new ProjectManagementWork(pe_treeItem.ReferenceObject.CreateCopy(TypePE, pe_treeItem.PEForSync, GuidsLinks, false));
+            
                 var newPE = ProjectManagementWork.CopyPE(pe_treeItem.ProjectElement, pe_treeItem.PEForSync, GuidsLinks);
 
                 if (newPE != null)
@@ -258,13 +224,6 @@ namespace Wpf_SyncCompositionPE.Model
                     //amountAddObjects++;
 
                     ProjectManagementWork.RecalcResourcesWorkLoad(newPE);
-                    //Console.WriteLine("Синхронизирование элемент {0} в укрупнении {1}", pe_treeItem.Name, pe_treeItem.PEForSync.ToString());
-                    /*   newPE.ReferenceObject.EndChanges()*/
-                    ;
-                    //amountCreate++;
-
-                    // text = string.Format("Добавление элемента проекта {0}", newPE.ToString());
-                    // WaitingHelper.SetText(text);
 
                     if (IsCopyRes)
                     {
@@ -273,9 +232,6 @@ namespace Wpf_SyncCompositionPE.Model
                     }
 
                     Synchronization.SyncronizeWorks(newPE, pe_treeItem.ProjectElement);
-
-                    //pe_treeItem.IsSelectObjToSynch = false;
-                    //pe_treeItem.IsObjectToSync = false;
 
                     return newPE;
                 }

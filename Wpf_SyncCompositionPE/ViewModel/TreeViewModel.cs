@@ -17,28 +17,30 @@ namespace Wpf_SyncCompositionPE.ViewModel
 {
     public class TreeViewModel : TreeViewItemViewModel
     {
-
+        /// <summary>
+        /// Количество созданных ссылок типа TreeViewModel
+        /// </summary>
+        /// <returns></returns>
         public static int GetActiveInstances()
         {
             return Instances;
         }
 
-
-
+        /// <summary>
+        /// Ссылка на экземпляр класса Worker
+        /// </summary>
         public Worker Worker
         {
             get { return Worker.Instance; }
         }
 
+
         static public int Instances = 0;
-        //static public double PercentTreeBuild = 0;
-        //static public int AmountAllItemsTree = 0;
+
 
         ~TreeViewModel()
         {
             Interlocked.Decrement(ref Instances);
-            //if (MainWindowViewModel != null)
-            //    MainWindowViewModel.InstanceNumber = Instances;
         }
 
         ReferenceObject _projectElement;
@@ -49,14 +51,9 @@ namespace Wpf_SyncCompositionPE.ViewModel
             set { _projectElement = value; }
         }
 
-        //static public MainWindowViewModel MainWindowViewModel;
-
         static TreeViewModel()
         {
-            //MainWindowViewModel = null;
             Instances = 0;
-            //PercentTreeBuild = 0;
-            //AmountAllItemsTree = 0;
         }
 
 
@@ -64,36 +61,30 @@ namespace Wpf_SyncCompositionPE.ViewModel
         public TreeViewModel(ReferenceObject projectElement, TreeViewModel parent, ReferenceObject startSelectBiggerPE = null/*, MainWindowViewModel mainWindowViewModel = null*/)
          : base(parent, false)
         {
+            //если отмена, завершаем построение дерева
+            if (Worker.Cancel) {  return; }
 
+            #region вычисления процента построения дерева
+
+
+            //при изменении номера итерации происходит пересчет процента выполнения
+            //предварительно перед изменением номера итерации, нужно вычислить "количество итераций всего"
             Worker.CurrentNumberIterat++;
 
-            if (Worker.Cancel) { System.Console.WriteLine("Конструктор построения дерева  - отмена ");  return; }
-
-            //if (MainWindowViewModel == null)
-            //    MainWindowViewModel = mainWindowViewModel;
-
-
             if (Worker.Percent == "0%")
-            {
                 Worker.numberAllIterat = projectElement.Children.RecursiveLoad().Count + 1;
-            }
+            
+           
 
-    
+            #endregion
 
-            //MainWindowViewModel.Percent = PercentTreeBuild;
+            //увеличиваем счетчик количества свозданных ссылок на экземпляр
+            Interlocked.Increment(ref Instances);
 
             if (startSelectBiggerPE != null)
                 _startSelectBiggerPE = startSelectBiggerPE;
 
             ProjectElement = projectElement;
-
-            Interlocked.Increment(ref Instances);
-
-         
-
-
-            // Начинаем обрабатывать элементы начиная с корня.
-            //if (ProjectElement != projectElement)
 
             LoadChildren();
 
@@ -116,13 +107,10 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         }
 
-        public override string ToString()
-        {
-            return Name;
-        }
-
+        #region свойства
 
         private List<ReferenceObject> укрупнения;
+
 
         public List<ReferenceObject> Укрупнения
         {
@@ -187,178 +175,6 @@ namespace Wpf_SyncCompositionPE.ViewModel
         /// Укрупнение с которым нужно синхронизировать
         /// </summary>
         public ReferenceObject PEForSync { get; set; }
-
-        void check()
-        {
-            //если дочерний элементе детализации не синхронизирован укрупнением родительского элемента
-            //то такой дочерний элемент доступен для синхронизации 
-            if ((HelperMethod.IsListNullOrEmpty(Укрупнения) ||
-              !Укрупнения.Any(pmw => ProjectManagementWork.GetProject(pmw) == ProjectStartSelectBiggerPE)))
-            {
-
-                if (!ProjectElement.Children.Any(ch => ch == ProjectStartSelectBiggerPE))
-                {
-                    _isSelectObjToSynch = true;
-                    containsObjSync = true;
-                    _isObjectToSync = true;
-                }
-
-                List<ReferenceObject> УкрупненияДетализации = Synchronization.GetSynchronizedWorks(ProjectElement.Parent, true);
-
-                if (!HelperMethod.IsListNullOrEmpty(УкрупненияДетализации))
-                    PEForSync = УкрупненияДетализации.FirstOrDefault(pe => ProjectManagementWork.GetProject(pe) == ProjectStartSelectBiggerPE);
-            }
-            else
-            {
-                _isSelectObjToSynch = false;
-                _isObjectToSync = false;
-            }
-        }
-
-        bool _isObjectToSync = false;
-
-        /// <summary>
-        /// Объект для синхронизации
-        /// </summary>
-        public bool IsObjectToSync
-        {
-            get
-            {
-                return _isObjectToSync;
-            }
-            set
-            {
-                if (_isObjectToSync == value) return;
-
-                _isObjectToSync = value;
-
-                if ((bool)IsSelectObjToSynch)
-                {
-                    if (false == _isObjectToSync)
-                    {
-                       clearAllCheckboxes(this);
-                    }
-                    else
-                    {
-                        MarkAllParents(this.Parent as TreeViewModel);
-                    }
-                }
-                RaisePropertyChanged("IsObjectToSync");
-
-            }
-        }
-
-
-        #region работа с чекбоксом
-
-        /// <summary>
-        /// Снять галочку в дочернего элемента, если сняли с родителя
-        /// </summary>
-        /// <param name="data"></param>
-        public void clearAllCheckboxes(TreeViewModel data)
-        {
-            if (data == null) return;
-
-            if ((bool)data.IsSelectObjToSynch == false) return;
-
-            if ((bool)data.IsObjectToSync == true)
-                data.IsObjectToSync = false;
-
-            foreach (var child in data.Children.OfType<TreeViewModel>())
-                clearAllCheckboxes(child);
-        }
-
-        /// <summary>
-        /// Проставить галочку родителю, если проставили дочернему
-        /// </summary>
-        /// <param name="data"></param>
-        public void MarkAllParents(TreeViewModel data)
-        {
-            if (data == null) { return; }
-
-            if ((bool)data.IsSelectObjToSynch == false) { return; }
-
-            if ((bool)data.IsObjectToSync == false)
-                data.IsObjectToSync = true;
-
-            MarkAllParents(data.Parent as TreeViewModel);
-        }
-        #endregion
-        bool? _isSelectObjToSynch = null;
-
-        /// <summary>
-        /// Этот объект можно выбрать для синхронизации
-        public bool? IsSelectObjToSynch
-        {
-            get
-            {
-                if (_isSelectObjToSynch == null)
-                    check();
-
-                return _isSelectObjToSynch;
-            }
-            set
-            {
-
-                if (_isSelectObjToSynch == value) return;
-
-                _isSelectObjToSynch = value;
-
-                RaisePropertyChanged(nameof(IsSelectObjToSynch));
-            }
-        }
-
-        static bool containsObjSync = false;
-        /// <summary>
-        /// Соддержит данные для синхронизации
-        /// </summary>
-        public bool ContainsObjSync
-        {
-            get
-            {
-                return containsObjSync;
-            }
-            set
-            {
-
-                containsObjSync = value;
-
-                RaisePropertyChanged(nameof(ContainsObjSync));
-            }
-        }
-
-        private string visibilityCheckBox = "Collapsed";
-
-        /// <summary>
-        /// Флаг отвечающий за отображение чекбокса в дереве
-        /// </summary>
-        public string VisibilityCheckBox
-        {
-            get
-            {
-                bool ShowCheckBox = (bool)IsSelectObjToSynch;//нужно отобразить чекбокс
-
-                if (ShowCheckBox == true)//нужно отобразить - показываем 
-                    visibilityCheckBox = "Visible";
-                //else if (this.HasChildren)
-                //    visibilityCheckBox = "Collapsed";
-                else
-                    visibilityCheckBox = "Collapsed";
-
-                return visibilityCheckBox;
-            }
-            //set
-            //{
-            //    visibilityCheckBox = value;
-            //    RaisePropertyChanged(nameof(VisibilityCheckBox));
-            //}
-        }
-
-        //public int Id
-        //{
-        //    get { return _element.Id; }
-        //    set { _element.Id = value; }
-        //}
 
 
         private ImageSource _pathIcon = null;
@@ -465,7 +281,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         private string _name;
 
 
-        public  string Name
+        public string Name
         {
             get
             {
@@ -483,6 +299,168 @@ namespace Wpf_SyncCompositionPE.ViewModel
                 if (_name != value)
                     _name = value;
             }
+        }
+
+       
+
+        bool _isObjectToSync = false;
+
+        /// <summary>
+        /// Объект для синхронизации
+        /// </summary>
+        public bool IsObjectToSync
+        {
+            get
+            {
+                return _isObjectToSync;
+            }
+            set
+            {
+                if (_isObjectToSync == value) return;
+
+                _isObjectToSync = value;
+
+                if ((bool)IsSelectObjToSynch)
+                {
+                    if (false == _isObjectToSync)
+                    {
+                       clearAllCheckboxes(this);
+                    }
+                    else
+                    {
+                        MarkAllParents(this.Parent as TreeViewModel);
+                    }
+                }
+                RaisePropertyChanged("IsObjectToSync");
+
+            }
+        }
+
+        bool? _isSelectObjToSynch = null;
+
+        /// <summary>
+        /// Этот объект можно выбрать для синхронизации
+        /// С помощью чекбокса
+        /// <summary>
+        public bool? IsSelectObjToSynch
+        {
+            get
+            {
+                if (_isSelectObjToSynch == null)
+                    check();
+
+                return _isSelectObjToSynch;
+            }
+            set
+            {
+
+                if (_isSelectObjToSynch == value) return;
+
+                _isSelectObjToSynch = value;
+
+                RaisePropertyChanged(nameof(IsSelectObjToSynch));
+            }
+        }
+
+        static bool containsObjSync = false;
+
+        /// <summary>
+        /// В дереве содержаться данные для синхронизации
+        /// </summary>
+        public bool ContainsObjSync
+        {
+            get
+            {
+                return containsObjSync;
+            }
+            set
+            {
+
+                containsObjSync = value;
+
+                RaisePropertyChanged(nameof(ContainsObjSync));
+            }
+        }
+
+
+
+        #endregion
+
+        #region работа с чекбоксом
+
+        /// <summary>
+        /// Снять галочку в дочернего элемента, если сняли с родителя
+        /// </summary>
+        /// <param name="data"></param>
+        public void clearAllCheckboxes(TreeViewModel data)
+        {
+            if (data == null) return;
+
+            if ((bool)data.IsSelectObjToSynch == false) return;
+
+            if ((bool)data.IsObjectToSync == true)
+                data.IsObjectToSync = false;
+
+            foreach (var child in data.Children.OfType<TreeViewModel>())
+                clearAllCheckboxes(child);
+        }
+
+        /// <summary>
+        /// Проставить галочку родителю, если проставили дочернему
+        /// </summary>
+        /// <param name="data"></param>
+        public void MarkAllParents(TreeViewModel data)
+        {
+            if (data == null) { return; }
+
+            if ((bool)data.IsSelectObjToSynch == false) { return; }
+
+            if ((bool)data.IsObjectToSync == false)
+                data.IsObjectToSync = true;
+
+            MarkAllParents(data.Parent as TreeViewModel);
+        }
+        #endregion
+
+        void check()
+        {
+            //если дочерний элементе детализации не синхронизирован укрупнением родительского элемента
+            //то такой дочерний элемент доступен для синхронизации 
+            if ((HelperMethod.IsListNullOrEmpty(Укрупнения) ||
+              !Укрупнения.Any(pmw => ProjectManagementWork.GetProject(pmw) == ProjectStartSelectBiggerPE)))
+            {
+
+                if (!ProjectElement.Children.Any(ch => ch == ProjectStartSelectBiggerPE))
+                {
+                    _isSelectObjToSynch = true;
+                    containsObjSync = true;
+                    _isObjectToSync = true;
+                }
+
+                List<ReferenceObject> УкрупненияДетализации = Synchronization.GetSynchronizedWorks(ProjectElement.Parent, true);
+
+                if (!HelperMethod.IsListNullOrEmpty(УкрупненияДетализации))
+                    PEForSync = УкрупненияДетализации.FirstOrDefault(pe => ProjectManagementWork.GetProject(pe) == ProjectStartSelectBiggerPE);
+            }
+            else
+            {
+                _isSelectObjToSynch = false;
+                _isObjectToSync = false;
+            }
+        }
+
+      
+        //public int Id
+        //{
+        //    get { return _element.Id; }
+        //    set { _element.Id = value; }
+        //}
+
+
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

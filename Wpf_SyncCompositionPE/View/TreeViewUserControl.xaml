@@ -5,15 +5,28 @@
              xmlns:treeViewCustom="clr-namespace:HierarchicalTreeControl.Model;assembly=HierarchicalTreeControl"
              xmlns:loadControl="clr-namespace:LoadingWindow;assembly=LoadingWindow"
              xmlns:data="clr-namespace:Wpf_SyncCompositionPE.ViewModel;assembly=Wpf_SyncCompositionPE">
-             
+
+    <UserControl.Resources>
+
+        <!--Стиль для CheckBox-->
+        <Style x:Key="styleCheckBoxInnerTree" TargetType="CheckBox">
+            <Style.Triggers>
+                <!--Если значение свойства ShortName объекта с этим стилем будет равно USA - текст станет красного цвета-->
+                <DataTrigger Binding="{Binding Path=IsSelectObjToSynch}" Value="False">
+                    <Setter Property="Visibility" Value='Collapsed' />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    
     <!--xmlns:data="clr-namespace:Wpf_SyncCompositionPE.ViewModel;assembly=Wpf_SyncCompositionPE"-->
     <Grid>
 
-        <loadControl:LoadingWindowControl HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 30 0 30" />
-        <DockPanel>
-            <treeViewCustom:TreeViewCustom AllowsColumnReorder="True" ItemsSource="{Binding Tree}">
+        <loadControl:LoadingWindowControl HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 30 0 30" StackPanel.ZIndex="1"  />
+  
+        <treeViewCustom:TreeViewCustom AllowsColumnReorder="True" ItemsSource="{Binding  Tree}" >
                 <!-- Создание шаблона элемента, чтобы указать ItemsSource -->
-                <treeViewCustom:TreeViewCustom.ItemTemplate >
+                <treeViewCustom:TreeViewCustom.ItemTemplate>
                     <!--<HierarchicalDataTemplate  DataType="{x:Type data:TreeViewModel}" 
           ItemsSource="{Binding Children}" />-->
                     <HierarchicalDataTemplate  ItemsSource="{Binding Children}" />
@@ -27,7 +40,7 @@
                                     <!--Кнопка Expander -->
                                     <treeViewCustom:TreeViewCustomExpander/>
                                     <Image Width="16" Height="16" Margin="3,0" Source="{Binding PathIcon}" />
-                                    <CheckBox IsChecked="{Binding IsObjectToSync}"  Visibility="{Binding VisibilityCheckBox}" VerticalAlignment="Center"/>
+                                    <CheckBox x:Name="ckBoxInnerTree" IsChecked="{Binding IsObjectToSync}"  Style="{StaticResource styleCheckBoxInnerTree}" VerticalAlignment="Center"/>
                                     <!--Отобразить имя-->
                                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Width="250"/>
                                 </StackPanel>
@@ -47,6 +60,5 @@
                     </GridViewColumn>
                 </treeViewCustom:TreeViewCustom.Columns>
             </treeViewCustom:TreeViewCustom>
-        </DockPanel>
    </Grid>
 </UserControl>

@@ -31,7 +31,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
     public class MainWindowViewModel : ViewModelBase
     {
 
-        
+
         public Worker Worker
         {
             get { return Worker.Instance; }
@@ -198,6 +198,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         {
             get
             {
+
                 if (_syncResCommand == null)
                     _syncResCommand = new RelayCommand(ExecuteSyncResCommand, CanExecuteSyncResCommand);
                 return _syncResCommand;
@@ -312,14 +313,38 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         }
 
+        private RelayCommand _cancelCommand;
+
+        /// <summary>
+        /// Отмена
+        /// </summary>
+        public ICommand CancelCommand
+        {
+            get
+            {
+                if (_cancelCommand == null)
+                {
+                    _cancelCommand = new RelayCommand((obj) =>
+                    {
+                     
+                        Worker.Cancel = true;
+                   
+                    }
+                    );
+                }
+                return _cancelCommand;
+            }
+
+        }
+
 
         private void Waite()
         {
             while (!Worker.IsWorkComplet) { }
 
-   
+
             return;
-            
+
         }
         public void Close(Window w)
         {
@@ -328,14 +353,14 @@ namespace Wpf_SyncCompositionPE.ViewModel
             Worker.Cancel = true;
 
             System.Threading.Tasks.Task.Run(() => Waite())
-                .ContinueWith(t => 
+                .ContinueWith(t =>
                 {
-                Cleanup();
-                  
-                w.Close();
+                    Cleanup();
+
+                    w.Close();
                 }, System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext()); ;
 
-         
+
         }
 
         #endregion
@@ -365,7 +390,8 @@ namespace Wpf_SyncCompositionPE.ViewModel
         /// <param name="parameter"></param>
         public void ExecuteBuildTreeCommand(object parameter)
         {
-            StartWorkLoading(TreeBuild);
+            Worker.Cancel = false;
+            Worker.StartWork(TreeBuild, "Загрузка дерева элементов проекта");
         }
 
 
@@ -374,37 +400,26 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         private void TreeBuild()
         {
-            Tree.Clear();
-
-            Worker.StartWork(TreeViewBuild_DoWork, "Загрузка дерева элементов проекта");
-
-        }
-
-        private void Wait()
-        {
-            System.Threading.Thread.Sleep(3500);
-        }
-    
-        void TreeViewBuild_DoWork()
-        {
 
             if (_dispatcher == null)
                 _dispatcher = Dispatcher.CurrentDispatcher;
 
+            _dispatcher.Invoke(new Action(() =>
+            {
+                Tree.Clear();
+            }));
+
             treeViewModel = new TreeViewModel(syncCompositionPE.StartObjectDetail, null, syncCompositionPE.StartRefObject/*, this*/);
 
-            if (Worker.Cancel) { return; }
+            if (Worker.Cancel) return;
 
             _dispatcher.Invoke(new Action(() =>
             {
                 Tree.Add(treeViewModel);
             }));
-
-            if (treeViewModel.ContainsObjSync)
-                Wait();
-
-
         }
+
+
 
         /// <summary>
         /// Условия выполнения кнопки "Загрузить"
@@ -413,7 +428,6 @@ namespace Wpf_SyncCompositionPE.ViewModel
         /// <returns></returns>
         public bool CanExecuteBuildTreeCommand(object parameter)
         {
-
             if (selectedDetailingProject == null)
                 return false;
             else
@@ -446,32 +460,12 @@ namespace Wpf_SyncCompositionPE.ViewModel
         //static private BackgroundWorker _bgWorkerSynchronizingСomposition = null;
 
 
-        void Sync()
-        {
-            Worker.StartWork(bgWorkerSynchronizingСomposition_DoWork, "Синхронизация состава работ");
-        }
-
-        void bgWorkerSynchronizingСomposition_DoWork()
-        {
-            syncCompositionPE.SynchronizingСomposition(treeViewModel, IsCopyRes: IsSyncRes, IsCopyOnlyPlan: IsSyncOnlyPlanRes);
-        }
-
 
         delegate void StarterWorkLoading();
 
         void StartWorkLoading(StarterWorkLoading starterWorkLoading)
         {
-
-            //if (bf == null)
-            //    bf = new BlurEffect();
-
-            //bf.Radius = 10;
-            //MainWindow.Effect = bf;
-
             starterWorkLoading();
-
-            //bf.Radius = 0;
-            //MainWindow.Effect = bf;
         }
 
         /// <summary>
@@ -480,13 +474,16 @@ namespace Wpf_SyncCompositionPE.ViewModel
         /// <param name="parameter"></param>
         public void ExecuteSyncCommand(object parameter)
         {
-
-            StartWorkLoading(Sync);
-            StartWorkLoading(TreeBuild);
-
+            Worker.Cancel = false;
+            Worker.StartWork(Sync, "Синхронизация состава работ");
+            ExecuteBuildTreeCommand(null);
         }
 
 
+        void Sync()
+        {
+            syncCompositionPE.SynchronizingСomposition(treeViewModel, IsCopyRes: IsSyncRes, IsCopyOnlyPlan: IsSyncOnlyPlanRes);
+        }
 
         /// <summary>
         /// Условия нажатия кнопки

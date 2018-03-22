@@ -60,7 +60,8 @@ namespace ConsoleApplication
 #if TF_TEST
             //ServerGateway.Connect("administrator", new MD5HashString("saTflexTest1"), "TF-test");
             //ServerGateway.Connect("UNKNOWN\\14_4_0_100");
-            ServerGateway.Connect("TF-TEST\\TF_TEST15");
+            ServerGateway.Connect("TFLEX");
+            //ServerGateway.Connect("TF-TEST\\TF_TEST15");
 
 #else
 

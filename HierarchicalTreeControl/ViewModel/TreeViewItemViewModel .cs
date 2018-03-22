@@ -5,6 +5,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using Wpf_SyncCompositionPE.ViewModel;
 
 namespace HierarchicalTreeControl.ViewModel
 {
@@ -29,6 +31,8 @@ namespace HierarchicalTreeControl.ViewModel
 
         #region Constructors
 
+
+
         protected TreeViewItemViewModel(TreeViewItemViewModel parent, bool lazyLoadChildren = false)
         {
             _parent = parent;
@@ -40,7 +44,7 @@ namespace HierarchicalTreeControl.ViewModel
                 _children.Add(DummyChild);
         }
 
-        // Это используется для создания экземпляра DummyChild.
+        // Этот конструктор используется для создания экземпляра DummyChild.
         private TreeViewItemViewModel()
         {
         }
@@ -49,7 +53,6 @@ namespace HierarchicalTreeControl.ViewModel
 
         #region Presentation Members
 
-     
 
         #region Children
 
@@ -72,8 +75,6 @@ namespace HierarchicalTreeControl.ViewModel
         {
             get { return this.Children.Count == 1 && this.Children[0] == DummyChild; }
         }
-
-
 
         #endregion // HasLoadedChildren
 
@@ -122,17 +123,18 @@ namespace HierarchicalTreeControl.ViewModel
         #region IsSelected
 
         /// <summary>
-        /// Получает / задает, является ли TreeViewItem
-        /// , связанный с этим объектом.
+        /// Является ли TreeViewItem
+        /// выбранным объектом.
         /// </summary>
         public bool IsSelected
         {
-            get { return _isSelected; }
+            get {   return _isSelected; }
             set
             {
                 if (value != _isSelected)
                 {
                     _isSelected = value;
+                
                     this.RaisePropertyChanged(nameof(IsSelected));
                 }
             }
@@ -140,7 +142,32 @@ namespace HierarchicalTreeControl.ViewModel
 
         #endregion // IsSelected
 
-    
+
+        //#region SelectedItem
+
+        ///// <summary>
+        ///// Выбранный объект
+        ///// </summary>
+        //public TreeViewItemViewModel SelectedItem
+        //{
+        //    get
+        //    {
+        //        if (_selectedItem != null)
+        //            Console.WriteLine(((TreeViewModel)(_selectedItem)).Name); return _selectedItem; }
+        //    set
+        //    {
+        //        if (value != _selectedItem)
+        //        {
+        //            _selectedItem = value;
+        //            if (value != null)
+        //                Console.WriteLine(((TreeViewModel)(value)).Name);
+        //            RaisePropertyChanged(nameof(SelectedItem));
+        //        }
+        //    }
+        //}
+
+        //#endregion // SelectedItem
+
 
         #region LoadChildren
 

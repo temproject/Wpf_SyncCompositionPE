@@ -49,9 +49,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="TFlex.DOCs.Model, Version=14.4.0.100, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TFlex.DOCs.Model, Version=15.1.0.107, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\T-FLEX DOCs 15 (15.0.1.6)\Program\TFlex.DOCs.Model.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\T-FLEX DOCs 15\Program\TFlex.DOCs.Model.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="Wpf_SyncCompositionPE">

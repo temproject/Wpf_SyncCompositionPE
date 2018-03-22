@@ -1,9 +1,12 @@
-﻿using System;
+﻿using HierarchicalTreeControl.ViewModel;
+using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using Wpf_SyncCompositionPE.ViewModel;
 
 namespace HierarchicalTreeControl.Model
 {
@@ -41,12 +44,11 @@ namespace HierarchicalTreeControl.Model
     /// Представляет элемент управления, который отображает иерархические данные в древовидной структуре, 
     /// в которой есть элементы, которые могут расширяться и сворачиваться.
     /// </summary>
-    public class TreeViewCustom : TreeView
+    public class TreeViewCustom : TreeView, INotifyPropertyChanged
     {
-        
+
         static TreeViewCustom()
         {
-
             // Переопределить стиль по умолчанию и шаблон управления по умолчанию
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TreeViewCustom), new FrameworkPropertyMetadata(typeof(TreeViewCustom)));
         }
@@ -54,10 +56,10 @@ namespace HierarchicalTreeControl.Model
         /// <summary>
         /// Инициализировать новый экземпляр TreeViewCustom.
         /// </ summary>
-        public TreeViewCustom()
+        public TreeViewCustom() : base()
         {
             Columns = new GridViewColumnCollection();
-        
+            base.SelectedItemChanged += new RoutedPropertyChangedEventHandler<Object>(TreeViewCustom_SelectedItemChanged);
         }
 
         #region Свойства
@@ -84,7 +86,32 @@ namespace HierarchicalTreeControl.Model
         }
 
 
+        public TreeViewItemViewModel SelectedItem_
+        {
+            get {return GetValue(SelectedItemProperty) as TreeViewItemViewModel; }
+            set
+            {
+                SetValue(SelectedItemsProperty, value);
+                NotifyPropertyChanged("SelectedItem_");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(String aPropertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(aPropertyName));
+        }
+
+
         #endregion
+
+
+        private void TreeViewCustom_SelectedItemChanged(Object sender, RoutedPropertyChangedEventArgs<Object> e)
+        {
+            this.SelectedItem_ = base.SelectedItem as TreeViewItemViewModel;
+        }
 
         #region Свойства статической зависимости
 
@@ -100,6 +127,13 @@ namespace HierarchicalTreeControl.Model
             DependencyProperty.Register("Columns", typeof(GridViewColumnCollection),
             typeof(TreeViewCustom),
             new UIPropertyMetadata(null));
+
+        public static readonly DependencyProperty SelectedItemsProperty =
+            DependencyProperty.Register("SelectedItem_", typeof(TreeViewItemViewModel),
+            typeof(TreeViewCustom),
+            new UIPropertyMetadata(null));
+
+
         #endregion
     }
 

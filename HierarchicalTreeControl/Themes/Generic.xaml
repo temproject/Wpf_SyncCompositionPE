@@ -30,7 +30,7 @@
         <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
         <Setter Property="FontWeight" Value="Normal" />
-    </Style>-->
+    </Style>  -->
 
     <!-- стиль кнопки ToggleButton -->
     <Style x:Key="ExpandCollapseToggleStyle"
@@ -94,6 +94,7 @@
 
     <!--Шаблон управления для TreeViewItem .-->
     <ControlTemplate TargetType="TreeViewItem" x:Key="TreeViewCustomItem">
+        
         <!--Сетка, содержащая текущую информацию и подузлы.-->
         <StackPanel>
             <!--Пограничная упаковка содержимого презентатора.-->
@@ -107,20 +108,19 @@
             <!--ItemsPresenter, содержащий подузлы -->
             <ItemsPresenter x:Name="ItemsPresenter" Visibility="Collapsed" />
         </StackPanel>
+        
         <ControlTemplate.Triggers>
-
 
             <!-- если идет процесс загрузки, то дерево нужно заблокировать от редактирования-->
             <DataTrigger  Binding="{Binding Worker.IsWorkComplet}" Value="false">
                 <Setter Property="IsEnabled" Value="false"/>
             </DataTrigger>
-
+            
             <DataTrigger Binding="{Binding Path=IsSelectObjToSynch}" Value="true">
-                <!--<Setter TargetName="Border" Property="Background"
-                    Value="#7777C5"/>-->
                 <Setter Property="Foreground" 
                     Value="Red"/>
             </DataTrigger>
+            
             <!--Триггер, используемый для отображения подпунктов-->
             <Trigger Property="IsExpanded" Value="True">
                 <Setter TargetName="ItemsPresenter" Property="Visibility" Value="Visible"/>
@@ -158,7 +158,6 @@
 
     <!--Шаблон управления для TreeViewCustomExpander.-->
     <ControlTemplate TargetType="{x:Type TreeView:TreeViewCustomExpander}" x:Key="TreeViewCustomExpander">
-
         <StackPanel Orientation="Horizontal" x:Name="ContainerElement">
             <!-- элемент FrameworkElement для отступов кнопки-->
             <FrameworkElement Width="{Binding RelativeSource={x:Static RelativeSource.Self}, 
@@ -187,9 +186,9 @@
                         <Style TargetType="TreeViewItem">
                             <Setter Property="Template" Value="{StaticResource TreeViewCustomItem}"/>
                             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                             <Setter Property="FontWeight" Value="Normal" />
                         </Style>
+
                         <!--стиль ко всем «TreeViewCustomExpander».-->
                         <Style TargetType="TreeView:TreeViewCustomExpander">
                             <Setter Property="Template" Value="{StaticResource TreeViewCustomExpander}"/>
@@ -230,5 +229,6 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
 </ResourceDictionary>
 

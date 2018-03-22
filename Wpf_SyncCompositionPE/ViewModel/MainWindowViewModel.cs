@@ -26,6 +26,7 @@ using System.Reflection;
 using LoadingWindow.ViewModel;
 using LoadingWindow.Model;
 using System.Threading;
+using HierarchicalTreeControl.ViewModel;
 
 namespace Wpf_SyncCompositionPE.ViewModel
 {
@@ -160,6 +161,31 @@ namespace Wpf_SyncCompositionPE.ViewModel
                 return _detailingProjects;
             }
         }
+
+        #region SelectedItem
+
+        TreeViewModel _selectedItem;
+        /// <summary>
+        /// Выбранный объект
+        /// </summary>
+        public TreeViewModel SelectedItem
+        {
+            get
+            {
+               return _selectedItem;
+            }
+            set
+            {
+                if (value != _selectedItem)
+                {
+                    _selectedItem = (TreeViewModel)value;
+                   
+                    RaisePropertyChanged(nameof(SelectedItem));
+                }
+            }
+        }
+
+        #endregion // SelectedItem
 
 
         /// <summary>
@@ -489,6 +515,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
             SelectedDetailingProject = null;
             _dispatcher = null;
             treeViewModel = null;
+            _selectedItem = null;
         }
     }
 }

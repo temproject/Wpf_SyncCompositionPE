@@ -8,13 +8,16 @@
         <Style.Triggers>
 
             <!-- если процент 0 или 100 то нужно скрыть контрол с анимацией загрузки-->
-            <DataTrigger Binding="{Binding Worker.Percent}" Value="0%">
+            <!--<DataTrigger Binding="{Binding Worker.Percent}" Value="0%">
                 <Setter Property="Visibility" Value="Collapsed"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding Worker.Percent}" Value="100%">
                 <Setter Property="Visibility" Value="Collapsed"/>
+            </DataTrigger>-->
+            <!-- если процесс выполнен -> скрыть контрол с анимацией загрузки-->
+            <DataTrigger Binding="{Binding Worker.IsWorkComplet}" Value="true">
+                <Setter Property="Visibility" Value="Collapsed"/>
             </DataTrigger>
-
         </Style.Triggers>
     </Style>
 

@@ -25,6 +25,7 @@ using System.Reflection;
 
 using LoadingWindow.ViewModel;
 using LoadingWindow.Model;
+using System.Threading;
 
 namespace Wpf_SyncCompositionPE.ViewModel
 {
@@ -189,6 +190,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         #region Commands
 
         #region checkbox Синхронизировать ресурсы
+
         RelayCommand _syncResCommand;
 
         /// <summary>
@@ -285,14 +287,6 @@ namespace Wpf_SyncCompositionPE.ViewModel
         /// </summary>
         public ICommand CloseCommand
         {
-            //get
-            //{
-            //    if (_closeCommand == null)
-            //    {
-            //        _closeCommand = new RelayCommand(param => Close(), param => CanClose);
-            //    }
-            //    return _closeCommand;
-            //}
             get
             {
                 if (_closeCommand == null)
@@ -304,13 +298,11 @@ namespace Wpf_SyncCompositionPE.ViewModel
                     }//, (obj) =>
                     //{
                     //    return Worker.IsWorkComplet;
-
                     //}
                     );
                 }
                 return _closeCommand;
             }
-
         }
 
         private RelayCommand _cancelCommand;
@@ -326,19 +318,14 @@ namespace Wpf_SyncCompositionPE.ViewModel
                 {
                     _cancelCommand = new RelayCommand((obj) =>
                     {
-                     
                         Worker.Cancel = true;
-                   
-                    }
-                    );
+                    });
                 }
                 return _cancelCommand;
             }
-
         }
 
-
-        private void Waite()
+        private void expect()
         {
             while (!Worker.IsWorkComplet) { }
             return;
@@ -350,7 +337,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
             Worker.Cancel = true;
 
-            System.Threading.Tasks.Task.Run(() => Waite())
+            System.Threading.Tasks.Task.Run(() => expect())
                 .ContinueWith(t =>
                 {
                     Cleanup();
@@ -395,7 +382,6 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
-
         private void TreeBuild()
         {
 
@@ -404,17 +390,23 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
             _dispatcher.Invoke(new Action(() =>
             {
+                treeViewModel = null;
                 Tree.Clear();
             }));
 
             treeViewModel = new TreeViewModel(syncCompositionPE.StartObjectDetail, null, syncCompositionPE.StartRefObject/*, this*/);
-
+      
             if (Worker.Cancel) return;
 
             _dispatcher.Invoke(new Action(() =>
             {
                 Tree.Add(treeViewModel);
             }));
+
+            //Console.WriteLine(TreeViewModel.Instances);
+            ////если в дереве есть объекты для синхронизации и объектов в дереве больше 100
+            //if (treeViewModel.ContainsObjSync && TreeViewModel.Instances > 100)
+            //    Thread.Sleep(3500);
         }
 
 
@@ -450,20 +442,6 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
                 return _syncCommand;
             }
-        }
-
-
-        // Задача объекта типа BackgroundWorker захватить свободный поток из пула потоков CLR и затем из
-        // этого потока вызвать событие DoWork;
-        //static private BackgroundWorker _bgWorkerSynchronizingСomposition = null;
-
-
-
-        delegate void StarterWorkLoading();
-
-        void StartWorkLoading(StarterWorkLoading starterWorkLoading)
-        {
-            starterWorkLoading();
         }
 
         /// <summary>
@@ -510,6 +488,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
             syncCompositionPE = null;
             SelectedDetailingProject = null;
             _dispatcher = null;
+            treeViewModel = null;
         }
     }
 }

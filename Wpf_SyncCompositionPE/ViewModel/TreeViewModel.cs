@@ -17,13 +17,14 @@ namespace Wpf_SyncCompositionPE.ViewModel
 {
     public class TreeViewModel : TreeViewItemViewModel
     {
-        /// <summary>
-        /// Количество созданных ссылок типа TreeViewModel
-        /// </summary>
-        /// <returns></returns>
-        public static int GetActiveInstances()
+
+        private static int _instances;
+        public static int Instances 
         {
-            return Instances;
+            get
+            {
+                return _instances;
+            }
         }
 
         /// <summary>
@@ -35,12 +36,12 @@ namespace Wpf_SyncCompositionPE.ViewModel
         }
 
 
-        static public int Instances = 0;
+       
 
 
         ~TreeViewModel()
         {
-            Interlocked.Decrement(ref Instances);
+            Interlocked.Decrement(ref _instances);
         }
 
         ReferenceObject _projectElement;
@@ -53,7 +54,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
 
         static TreeViewModel()
         {
-            Instances = 0;
+            _instances = 0;
         }
 
 
@@ -79,7 +80,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
             #endregion
 
             //увеличиваем счетчик количества свозданных ссылок на экземпляр
-            Interlocked.Increment(ref Instances);
+            Interlocked.Increment(ref _instances);
 
             if (startSelectBiggerPE != null)
                 _startSelectBiggerPE = startSelectBiggerPE;

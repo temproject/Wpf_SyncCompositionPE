@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 
 
-namespace Wpf_SyncCompositionPE
+namespace HierarchicalTreeControl
 {
     /// <summary>
     /// Interaction logic for TreeViewUserControl.xaml
@@ -10,7 +10,6 @@ namespace Wpf_SyncCompositionPE
     {
         public TreeViewUserControl()
         {
-            
             InitializeComponent(); 
         }
     }

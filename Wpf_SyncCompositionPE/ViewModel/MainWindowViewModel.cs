@@ -341,11 +341,9 @@ namespace Wpf_SyncCompositionPE.ViewModel
         private void Waite()
         {
             while (!Worker.IsWorkComplet) { }
-
-
             return;
-
         }
+
         public void Close(Window w)
         {
             //bool exit = true;
@@ -476,7 +474,7 @@ namespace Wpf_SyncCompositionPE.ViewModel
         {
             Worker.Cancel = false;
             Worker.StartWork(Sync, "Синхронизация состава работ");
-            ExecuteBuildTreeCommand(null);
+            Worker.StartWork(TreeBuild, "Загрузка дерева элементов проекта");
         }
 
 

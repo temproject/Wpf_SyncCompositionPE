@@ -1,0 +1,61 @@
+﻿<UserControl  x:Class="HierarchicalTreeControl.TreeViewUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:treeview="clr-namespace:HierarchicalTreeControl.Model"
+             xmlns:loading="clr-namespace:LoadingWindow;assembly=LoadingWindow"
+             xmlns:data="clr-namespace:Wpf_SyncCompositionPE;assembly=Wpf_SyncCompositionPE">
+    <UserControl.Resources>
+        <!--Стиль для CheckBox-->
+        <Style x:Key="styleCheckBoxInnerTree" TargetType="CheckBox">
+            <Style.Triggers>
+                <!--Если значение свойства IsSelectObjToSynch = False  - чекбокс будет скрыт-->
+                <DataTrigger Binding="{Binding IsSelectObjToSynch}" Value="False">
+                    <Setter Property="Visibility" Value='Collapsed' />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <!--  контрол загрузки, отображать поверх дерева StackPanel.ZIndex="1"-->
+        <loading:LoadingWindowControl HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 30 0 30" StackPanel.ZIndex="1"/>
+
+        <treeview:TreeViewCustom AllowsColumnReorder="True" ItemsSource="{Binding  Tree}" >
+
+            <!-- Создание шаблона элемента, чтобы указать ItemsSource -->
+            <treeview:TreeViewCustom.ItemTemplate>
+                <HierarchicalDataTemplate  ItemsSource="{Binding Children}" />
+            </treeview:TreeViewCustom.ItemTemplate>
+
+            <treeview:TreeViewCustom.Columns>
+                <!--  первый столбец, содержащий кнопку expand и имя типа .-->
+                <GridViewColumn Header="Наименование" Width="400">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <!--Кнопка Expander -->
+                                <treeview:TreeViewCustomExpander/>
+                                <Image Width="16" Height="16" Margin="3,0" Source="{Binding PathIcon}" />
+                                <CheckBox x:Name="ckBoxInnerTree" IsChecked="{Binding IsObjectToSync}"  Style="{StaticResource styleCheckBoxInnerTree}" VerticalAlignment="Center"/>
+                                <!--Отобразить имя-->
+                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Width="250"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <!--  второй столбец, содержащий номер элемента проекта -->
+                <GridViewColumn Header="Номер" Width="150" >
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <!--Отобразить номер-->
+                                <TextBlock Text="{Binding Number}" Width="Auto"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+            </treeview:TreeViewCustom.Columns>
+        </treeview:TreeViewCustom>
+    </Grid>
+</UserControl>

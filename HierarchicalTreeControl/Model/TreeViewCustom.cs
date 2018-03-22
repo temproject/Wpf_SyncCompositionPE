@@ -5,7 +5,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 
-
 namespace HierarchicalTreeControl.Model
 {
     /// <summary>
@@ -47,6 +46,7 @@ namespace HierarchicalTreeControl.Model
         
         static TreeViewCustom()
         {
+
             // Переопределить стиль по умолчанию и шаблон управления по умолчанию
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TreeViewCustom), new FrameworkPropertyMetadata(typeof(TreeViewCustom)));
         }

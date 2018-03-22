@@ -17,7 +17,7 @@
 
         </Style.Triggers>
     </Style>
-    
+
     <Storyboard x:Key="Storyboard1" RepeatBehavior="Forever">
         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="ellipse">
             <EasingColorKeyFrame KeyTime="0" Value="#FF009696"/>
@@ -79,5 +79,5 @@
             <EasingColorKeyFrame KeyTime="0:0:0.5" Value="#00009696"/>
         </ColorAnimationUsingKeyFrames>
     </Storyboard>
-    
+
 </ResourceDictionary>
